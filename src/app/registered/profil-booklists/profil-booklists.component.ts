@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
+import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/auth/user';
+import jwtDecode from 'jwt-decode';
+import { UiService } from 'src/app/ui/ui.service';
 
 @Component({
   selector: 'app-profil-booklists',
@@ -6,7 +11,27 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profil-booklists.component.scss'],
 })
 export class ProfilBooklistsComponent implements OnInit {
-  constructor() {}
+  user: User;
 
-  ngOnInit(): void {}
+  constructor(private userService: UserService, private ui: UiService) {}
+
+  ngOnInit(): void {
+    const token = window.localStorage.getItem('token');
+
+    const data: any = jwtDecode(token);
+
+    this.ui.setLoading(true);
+
+    this.userService.find(data.id).subscribe(
+      (user) => {
+        this.user = user;
+        console.log(this.user);
+
+        this.ui.setLoading(false);
+      },
+      (error) => {
+        this.ui.setLoading(false);
+      }
+    );
+  }
 }

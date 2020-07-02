@@ -12,6 +12,9 @@ import { BooklistService } from './public/booklist.service';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { ProfilBooklistsComponent } from './registered/profil-booklists/profil-booklists.component';
+import { BooklistsDetailsComponent } from './registered/booklists-details/booklists-details.component';
+import { BooklistCreateComponent } from './registered/booklist-create/booklist-create.component';
+import { BooklistEditComponent } from './registered/booklist-edit/booklist-edit.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +25,9 @@ import { ProfilBooklistsComponent } from './registered/profil-booklists/profil-b
     LoginComponent,
     RegisterComponent,
     ProfilBooklistsComponent,
+    BooklistsDetailsComponent,
+    BooklistCreateComponent,
+    BooklistEditComponent,
   ],
   imports: [
     BrowserModule,

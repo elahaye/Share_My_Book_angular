@@ -1,0 +1,18 @@
+<ng-container *ngIf="booklist">
+  <h1>
+    {{ booklist.name }}
+    <button class="btn btn-primary" (click)="handleDelete(booklist)">
+      <i class="fas fa-ban"></i>
+    </button>
+    <a routerLink="/booklist/edit/{{ booklist.id }}"
+      ><i class="fas fa-edit"></i
+    ></a>
+  </h1>
+
+  <ul>
+    <li *ngFor="let b of booklist['books']">
+      {{ b.title }} de <small>{{ b.author }}</small>
+      <p>{{ b.summary }}</p>
+    </li>
+  </ul>
+</ng-container>

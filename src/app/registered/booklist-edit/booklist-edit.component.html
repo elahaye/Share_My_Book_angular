@@ -1,0 +1,99 @@
+<ng-container *ngIf="previousBooklist">
+  <h1 class="text-center mt-5">Modifier une bookList</h1>
+
+  <div class="d-flex flex-row" *ngIf="previousBooklist">
+    <div class="container">
+      <form [formGroup]="booklistForm" (ngSubmit)="handleSubmit()">
+        <div class="mx-auto">
+          <div class="form-group form-row">
+            <label class="col-form-label">Nom :</label>
+            <div class="col-sm-10">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nom de votre bookList"
+                formControlName="name"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Catégorie (optionnel) : </label>
+            <select formControlName="category">
+              <option
+                *ngFor="let category of categories"
+                [ngValue]="category['id']"
+                >{{ category.name }}</option
+              >
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label">Statut :</label>
+            <select formControlName="status">
+              <option *ngFor="let s of status" [ngValue]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div>
+            <div
+              id="list-input border"
+              *ngIf="booksChosenList && booksChosenList.length === 0"
+            >
+              Vous n'avez pas encore ajouté de livre dans cette bookList
+            </div>
+            <div *ngIf="booksChosenList && booksChosenList.length !== 0">
+              <label class="col-form-label"> Liste des livres :</label>
+              <ul id="list-input border" *ngFor="let book of booksChosenList">
+                <li>
+                  <strong>{{ book.title }}</strong> de
+                  {{ book.author }}
+                  <button class="btn btn-danger" (click)="deleteFromList(book)">
+                    X
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <button class="btn btn-success">Modifier</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="container">
+      <form [formGroup]="researchForm" (ngSubmit)="researchBook()">
+        <div class="row">
+          <div class="input-group mx-auto">
+            <input
+              type="text"
+              placeholder="Recherche ton livre ici"
+              class="form-control"
+              formControlName="researchInput"
+            />
+            <button class="btn btn-primary">Rechercher</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="book-list">
+        <h2 class="text-center">Résultat de la recherche</h2>
+        <div
+          id="list-output"
+          class="col-lg-10"
+          *ngIf="booksFromGoogleApi && booksFromGoogleApi.length"
+        >
+          <div class="row" *ngFor="let b of booksFromGoogleApi">
+            <div class="col-md-4">
+              <img src="{{ b.image }}" alt="{{ b.title }}" />
+            </div>
+            <div class="card-body col-md-8">
+              <h5 class="card-title">{{ b.title }}</h5>
+              <p class="card-text">Auteur : {{ b.author }}</p>
+              <p class="card-text">{{ b.publicationDate }}</p>
+              <button type="button" class="btn btn-info" (click)="addToList(b)">
+                Ajouter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

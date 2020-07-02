@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, interval } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import jwtDecode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +24,14 @@ export class AuthService {
       return false;
     }
 
-    // const data: any = jwtDecode(token);
+    const data: any = jwtDecode(token);
+
+    // console.log(data);
 
     // // Comment comparer la date ACTUELLE et la date d'expiration ?
-    // return data.exp * 1000 > Date.now();
+    return data.exp * 1000 > Date.now();
 
-    return window.localStorage.getItem('token') !== null;
+    // return window.localStorage.getItem('token') !== null;
   }
 
   logout() {

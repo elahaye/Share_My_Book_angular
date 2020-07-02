@@ -1,1 +1,27 @@
-<p>profil-booklists works!</p>
+<ng-container *ngIf="user">
+  <h1>Profil de {{ user["nickname"] }}</h1>
+
+  <img
+    src="{{ user.avatar }}"
+    alt="Photo de profil de {{ user['nickname'] }}"
+  />
+
+  <p>Enregistré le : {{ user["registrationDate"] | date: "dd/MM/yyyy" }}</p>
+
+  <a routerLink="/booklist/create">Ajouter une nouvelle bookList</a>
+
+  <div *ngIf="user['booklists']">
+    <h2>Mes bookLists</h2>
+
+    <ul>
+      <li *ngFor="let b of user['booklists']">
+        <a routerLink="/booklist/{{ b.id }}">{{ b.name }}</a>
+        <small>({{ b.status }})</small>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="!user['booklists']">
+    <p>Aucune bookList enregistrée</p>
+  </div>
+</ng-container>
