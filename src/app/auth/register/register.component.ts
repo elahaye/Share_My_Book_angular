@@ -29,8 +29,7 @@ export class RegisterComponent implements OnInit {
   }
 
   handleSubmit() {
-    this.form.value.registrationDate = new Date('1995-12-17T03:24:00');
-    console.log(this.form.value);
+    this.form.value.registrationDate = new Date();
 
     this.userService.create(this.form.value).subscribe(
       (user) => {

@@ -1,1 +1,35 @@
-<h1>Rechercher votre liste de livres favorite !</h1>
+<ng-container *ngIf="booklists">
+  <h1>Rechercher votre liste de livres favorite !</h1>
+
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+    <div class="input-group md-form form-sm form-2 pl-0">
+      <input
+        class="form-control my-0 py-1 amber-border"
+        type="text"
+        placeholder="Taper le nom ou une partie de la bookList recherchée"
+        aria-label="Search"
+        formControlName="research"
+      />
+      <button class="btn btn-light">
+        <i class="fas fa-search text-warning" aria-hidden="true"></i>
+      </button>
+    </div>
+  </form>
+
+  <div class="researchResult pt-4" *ngIf="filteredBooklists">
+    <h3>Résultats de votre recherche</h3>
+    <ul>
+      <li *ngFor="let booklist of filteredBooklists">
+        <a routerLink="research/booklist/{{ booklist.id }}"
+          >{{ booklist.name }}
+          <small>de {{ booklist.creatorId.nickname }}</small>
+        </a>
+      </li>
+      <li *ngFor="let user of filteredUsers">
+        <a routerLink="research/users/{{ user.id }}">
+          {{ user.nickname }} (créateur)
+        </a>
+      </li>
+    </ul>
+  </div>
+</ng-container>

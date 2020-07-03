@@ -1,15 +1,17 @@
 <app-navbar></app-navbar>
 
-<div class="text-center">
-  <button
-    class="btn btn-secondary btn-lg mt-5"
-    type="button"
-    *ngIf="loading"
-    disabled
-  >
-    <span class="spinner-border" role="status" aria-hidden="true"></span>
-    Un petit moment...
-  </button>
+<div id="background">
+  <div class="text-center">
+    <button
+      class="btn btn-lg"
+      type="button"
+      *ngIf="loading"
+      id="loadingButton"
+      disabled
+    >
+      <span class="spinner-border" role="status" aria-hidden="true"></span>
+      Un petit moment...
+    </button>
+  </div>
+  <router-outlet></router-outlet>
 </div>
-
-<router-outlet></router-outlet>

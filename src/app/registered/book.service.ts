@@ -22,6 +22,10 @@ export class BookService {
   }
 
   create(book: Book) {
-    return this.http.post<Book>(environment.apiUrl + '/books', book);
+    return this.http.post<Book>(environment.apiUrl + '/books', book, {
+      headers: {
+        Authorization: 'Bearer ' + this.auth.getToken(),
+      },
+    });
   }
 }

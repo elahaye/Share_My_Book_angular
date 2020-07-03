@@ -3,7 +3,7 @@ import { Book } from './book';
 
 export interface Booklist {
   id?: number;
-  creatorId: string;
+  creatorId: any;
   category?: any;
   name: string;
   status: string;

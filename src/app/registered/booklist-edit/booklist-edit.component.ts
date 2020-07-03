@@ -67,9 +67,11 @@ export class BooklistEditComponent implements OnInit {
       )
       .subscribe((booklist) => {
         this.previousBooklist = booklist;
-        const splittedCategory = this.previousBooklist.category.split('/');
-        this.previousBooklist.category =
-          splittedCategory[splittedCategory.length - 1];
+        if (this.previousBooklist.hasOwnProperty('category')) {
+          const splittedCategory = this.previousBooklist.category.split('/');
+          this.previousBooklist.category =
+            splittedCategory[splittedCategory.length - 1];
+        }
 
         this.booklistForm.patchValue(this.previousBooklist);
 

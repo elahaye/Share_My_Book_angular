@@ -34,7 +34,7 @@ import { Router } from '@angular/router';
               <a routerLink="/register" class="nav-link">Inscription</a>
             </li>
             <li class="nav-item">
-              <a routerLink="/login" class="btn btn-primary">Connnexion</a>
+              <a routerLink="/login" class="btn btn-warning">Connnexion</a>
             </li>
           </ng-container>
           <li class="nav-item" *ngIf="isAuthenticated">

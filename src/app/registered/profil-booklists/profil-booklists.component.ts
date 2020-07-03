@@ -25,7 +25,6 @@ export class ProfilBooklistsComponent implements OnInit {
     this.userService.find(data.id).subscribe(
       (user) => {
         this.user = user;
-        console.log(this.user);
 
         this.ui.setLoading(false);
       },

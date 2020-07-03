@@ -1,1 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  background-image: url("assets/images/bookcase.jpg");
+}
+
+#background {
+  background-color: rgba(255, 255, 255, 0.9);
+  margin: 50px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+#loadingButton {
+  color: rgb(255, 115, 0);
+}
+
+#profilImage {
+  border-radius: 50%;
+  width: 200px;
+}
+
+.imagesFrontPage {
+  border-radius: 10px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.listBooks {
+  list-style-type: none;
+}
+
+a {
+  color: black;
+}

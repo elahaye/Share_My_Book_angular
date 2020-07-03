@@ -13,19 +13,11 @@ export class UserService {
 
   findAll() {
     return this.http
-      .get(environment.apiUrl + '/users', {
-        headers: {
-          Authorization: 'Bearer ' + this.auth.getToken(),
-        },
-      })
+      .get(environment.apiUrl + '/users')
       .pipe(map((data: User[]) => data['hydra:member'] as User[]));
   }
 
   find(id: number) {
-    return this.http.get<User>(environment.apiUrl + '/users/' + id, {
-      headers: {
-        Authorization: 'Bearer ' + this.auth.getToken(),
-      },
-    });
+    return this.http.get<User>(environment.apiUrl + '/users/' + id);
   }
 }

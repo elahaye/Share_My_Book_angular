@@ -183,6 +183,6 @@ export class BooklistCreateComponent implements OnInit {
 
     this.booklistService.create(newBooklist).subscribe((result) => {});
 
-    // this.router.navigateByUrl('profil-booklists');
+    this.router.navigateByUrl('profil-booklists');
   }
 }

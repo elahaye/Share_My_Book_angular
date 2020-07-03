@@ -25,14 +25,24 @@ export class BooklistService {
   create(booklist: Booklist) {
     return this.http.post<Booklist>(
       environment.apiUrl + '/booklists',
-      booklist
+      booklist,
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.auth.getToken(),
+        },
+      }
     );
   }
 
   update(booklist: Booklist) {
     return this.http.put<Booklist>(
       environment.apiUrl + '/booklists/' + booklist.id,
-      booklist
+      booklist,
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.auth.getToken(),
+        },
+      }
     );
   }
 }

@@ -1,27 +1,51 @@
 <ng-container *ngIf="user">
-  <h1>Profil de {{ user["nickname"] }}</h1>
+  <div class="d-flex flex-row">
+    <div class="container">
+      <h1>
+        <span class="badge badge-pill badge-warning mb-2"
+          >Profil de {{ user["nickname"] }}</span
+        >
+      </h1>
+      <ng-container *ngIf="user.avatar">
+        <img
+          src="{{ user.avatar }}"
+          alt="Photo de profil de {{ user['nickname'] }}"
+          id="profilImage"
+        />
+      </ng-container>
+      <ng-container *ngIf="!user.avatar">
+        <img
+          src="../../../assets/images/anonyme.jpg"
+          alt="Photo de profil de {{ user['nickname'] }}"
+          id="profilImage"
+        />
+      </ng-container>
 
-  <img
-    src="{{ user.avatar }}"
-    alt="Photo de profil de {{ user['nickname'] }}"
-  />
+      <small class="d-block pl-3 pt-3">
+        Enregistré le :
+        {{ user["registrationDate"] | date: "dd/MM/yyyy" }}
+      </small>
+    </div>
+    <div class="container pt-3">
+      <div *ngIf="user['booklists']">
+        <h3>Mes bookLists</h3>
 
-  <p>Enregistré le : {{ user["registrationDate"] | date: "dd/MM/yyyy" }}</p>
+        <a class="btn btn-light" routerLink="/booklist/create">
+          <i class="fas fa-arrow-circle-right pr-2"></i>Ajouter une nouvelle
+          bookList
+        </a>
 
-  <a routerLink="/booklist/create">Ajouter une nouvelle bookList</a>
+        <ul class="pt-3">
+          <li *ngFor="let b of user['booklists']" class="pt-2">
+            <a routerLink="/booklist/{{ b.id }}" class="pr-2">{{ b.name }}</a>
+            <small>({{ b.status }})</small>
+          </li>
+        </ul>
+      </div>
 
-  <div *ngIf="user['booklists']">
-    <h2>Mes bookLists</h2>
-
-    <ul>
-      <li *ngFor="let b of user['booklists']">
-        <a routerLink="/booklist/{{ b.id }}">{{ b.name }}</a>
-        <small>({{ b.status }})</small>
-      </li>
-    </ul>
-  </div>
-
-  <div *ngIf="!user['booklists']">
-    <p>Aucune bookList enregistrée</p>
+      <div *ngIf="!user['booklists']">
+        <p>Aucune bookList enregistrée</p>
+      </div>
+    </div>
   </div>
 </ng-container>

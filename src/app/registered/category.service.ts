@@ -20,4 +20,7 @@ export class CategoryService {
       })
       .pipe(map((data: Category[]) => data['hydra:member'] as Category[]));
   }
+  find(id: number) {
+    return this.http.get<Category>(environment.apiUrl + '/categories/' + id);
+  }
 }

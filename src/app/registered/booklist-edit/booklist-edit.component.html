@@ -1,5 +1,5 @@
 <ng-container *ngIf="previousBooklist">
-  <h1 class="text-center mt-5">Modifier une bookList</h1>
+  <h1 class="text-center mb-4">Modifier une bookList</h1>
 
   <div class="d-flex flex-row" *ngIf="previousBooklist">
     <div class="container">
@@ -18,7 +18,7 @@
           </div>
           <div class="form-group">
             <label class="col-form-label">Catégorie (optionnel) : </label>
-            <select formControlName="category">
+            <select formControlName="category" class="form-control">
               <option
                 *ngFor="let category of categories"
                 [ngValue]="category['id']"
@@ -28,7 +28,7 @@
           </div>
           <div class="form-group">
             <label class="col-form-label">Statut :</label>
-            <select formControlName="status">
+            <select formControlName="status" class="form-control">
               <option *ngFor="let s of status" [ngValue]="s">{{ s }}</option>
             </select>
           </div>
@@ -45,19 +45,22 @@
                 <li>
                   <strong>{{ book.title }}</strong> de
                   {{ book.author }}
-                  <button class="btn btn-danger" (click)="deleteFromList(book)">
+                  <button
+                    class="btn btn-outline-warning btn-sm"
+                    (click)="deleteFromList(book)"
+                  >
                     X
                   </button>
                 </li>
               </ul>
             </div>
           </div>
-          <button class="btn btn-success">Modifier</button>
+          <button class="btn btn-warning">Modifier</button>
         </div>
       </form>
     </div>
 
-    <div class="container">
+    <div class="container col-7">
       <form [formGroup]="researchForm" (ngSubmit)="researchBook()">
         <div class="row">
           <div class="input-group mx-auto">
@@ -67,12 +70,12 @@
               class="form-control"
               formControlName="researchInput"
             />
-            <button class="btn btn-primary">Rechercher</button>
+            <button class="btn btn-warning pl-2">Rechercher</button>
           </div>
         </div>
       </form>
 
-      <div class="book-list">
+      <div class="book-list pt-3">
         <h2 class="text-center">Résultat de la recherche</h2>
         <div
           id="list-output"
@@ -87,7 +90,11 @@
               <h5 class="card-title">{{ b.title }}</h5>
               <p class="card-text">Auteur : {{ b.author }}</p>
               <p class="card-text">{{ b.publicationDate }}</p>
-              <button type="button" class="btn btn-info" (click)="addToList(b)">
+              <button
+                type="button"
+                class="btn btn-info pt-3"
+                (click)="addToList(b)"
+              >
                 Ajouter
               </button>
             </div>
