@@ -18,11 +18,12 @@
     />
   </div>
   <div class="form-group">
+    <label>Une image représentant votre avatar</label>
     <input
       formControlName="avatar"
-      type="url"
+      type="file"
       class="form-control"
-      placeholder="Lien vers l'image de votre avatar"
+      (change)="handleFileInput($event.target.files)"
     />
   </div>
   <div class="form-group">

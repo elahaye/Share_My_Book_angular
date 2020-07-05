@@ -30,17 +30,8 @@ export class BooklistsDetailsComponent implements OnInit {
       this.id = params['id'];
     });
     this.booklistService.find(this.id).subscribe((booklist) => {
-      if (booklist.hasOwnProperty('category')) {
-        let categoryId = booklist.category.replace('/api/categories/', '');
-        this.categoryService.find(categoryId).subscribe((category) => {
-          booklist.category = category;
-          this.booklist = booklist;
-          this.ui.setLoading(false);
-        });
-      } else {
-        this.booklist = booklist;
-        this.ui.setLoading(false);
-      }
+      this.booklist = booklist;
+      this.ui.setLoading(false);
     });
   }
 

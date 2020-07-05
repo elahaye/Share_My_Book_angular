@@ -13,11 +13,7 @@ export class CategoryService {
 
   findAll() {
     return this.http
-      .get(environment.apiUrl + '/categories', {
-        headers: {
-          Authorization: 'Bearer ' + this.auth.getToken(),
-        },
-      })
+      .get(environment.apiUrl + '/categories')
       .pipe(map((data: Category[]) => data['hydra:member'] as Category[]));
   }
   find(id: number) {

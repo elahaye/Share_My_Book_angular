@@ -20,25 +20,19 @@
           class="profilImage"
         />
       </ng-container>
-
-      <small class="d-block pl-3 pt-3">
-        Enregistré le :
-        {{ user["registrationDate"] | date: "dd/MM/yyyy" }}
-      </small>
     </div>
     <div class="container pt-3">
       <div *ngIf="user['booklists']">
-        <h3>Mes bookLists</h3>
-
-        <a class="btn btn-light" routerLink="/booklist/create">
-          <i class="fas fa-arrow-circle-right pr-2"></i>Ajouter une nouvelle
-          bookList
-        </a>
+        <h2><ins>Ses booklists disponibles</ins></h2>
 
         <ul class="pt-3">
           <li *ngFor="let b of user['booklists']" class="pt-2">
-            <a routerLink="/booklist/{{ b.id }}" class="pr-2">{{ b.name }}</a>
-            <small>({{ b.status }})</small>
+            <a routerLink="../../booklist/{{ b.id }}" class="pr-2">{{
+              b.name
+            }}</a>
+            <ng-container *ngIf="b.category && b">
+              <small>({{ b.category.name }})</small>
+            </ng-container>
           </li>
         </ul>
       </div>

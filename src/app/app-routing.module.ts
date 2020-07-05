@@ -9,6 +9,8 @@ import { ProfilBooklistsComponent } from './registered/profil-booklists/profil-b
 import { BooklistsDetailsComponent } from './registered/booklists-details/booklists-details.component';
 import { BooklistCreateComponent } from './registered/booklist-create/booklist-create.component';
 import { BooklistEditComponent } from './registered/booklist-edit/booklist-edit.component';
+import { BooklistDetailsComponent } from './public/research/booklist-details/booklist-details.component';
+import { UserDetailsComponent } from './public/research/user-details/user-details.component';
 
 const routes: Routes = [
   { path: '', component: FrontpageComponent },
@@ -19,6 +21,8 @@ const routes: Routes = [
   { path: 'booklist/create', component: BooklistCreateComponent },
   { path: 'booklist/edit/:id', component: BooklistEditComponent },
   { path: 'booklist/:id', component: BooklistsDetailsComponent },
+  { path: 'research/booklist/:id', component: BooklistDetailsComponent },
+  { path: 'research/user/:id', component: UserDetailsComponent },
 ];
 
 @NgModule({

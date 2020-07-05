@@ -5,7 +5,13 @@ import {
   ViewChild,
   Output,
 } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  FormBuilder,
+  FormArray,
+  AbstractControl,
+} from '@angular/forms';
 import { UiService } from 'src/app/ui/ui.service';
 import { BooklistService } from '../booklist.service';
 import { Booklist } from 'src/app/registered/booklist';
@@ -13,6 +19,7 @@ import { EventEmitter } from 'protractor';
 import { UserService } from 'src/app/registered/user.service';
 import { CategoryService } from 'src/app/registered/category.service';
 import { User } from 'src/app/auth/user';
+import { Category } from 'src/app/registered/category';
 
 @Component({
   selector: 'app-research',
@@ -25,8 +32,14 @@ export class ResearchComponent implements OnInit {
   });
   booklists: Booklist[] = [];
   users: User[] = [];
+  categories: Category[] = [];
+  selectedCategories = [];
   filteredBooklists: Booklist[] = [];
   filteredUsers: User[] = [];
+
+  error = false;
+  loading = true;
+  canView = false;
 
   constructor(
     private ui: UiService,
@@ -37,37 +50,73 @@ export class ResearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.ui.setLoading(true);
-    this.booklistService.findAll().subscribe((result) => {
-      for (let i = 0; i < result.length; i++) {
-        this.booklists.push(result[i]);
+    this.loading = true;
+    this.booklistService.findAll().subscribe((booklists) => {
+      for (let i = 0; i < booklists.length; i++) {
+        this.booklists.push(booklists[i]);
       }
-      this.ui.setLoading(false);
     });
-    this.userService.findAll().subscribe((result) => {
-      console.log(result);
-      this.users = result;
+    this.userService.findAll().subscribe((users) => {
+      this.users = users;
+    });
+    this.categoryService.findAll().subscribe((categories) => {
+      for (let i = 0; i < categories.length; i++) {
+        this.form.addControl(categories[i]['name'], new FormControl(''));
+      }
+      this.categories = categories;
+      this.loading = false;
       this.ui.setLoading(false);
     });
   }
 
   handleSubmit() {
-    this.ui.setLoading(true);
+    this.filteredBooklists = [];
+    this.filteredUsers = [];
+
+    this.selectedCategories = [];
+    for (let i = 0; i < this.categories.length; i++) {
+      if (this.form.value[this.categories[i]['name']] === true) {
+        this.selectedCategories.push(this.categories[i]['name']);
+      }
+    }
+    this.loading = true;
     let input = this.form.value['research'];
     this.autoCompleteExpenseList(input);
+    this.loading = false;
+    this.canView = true;
   }
 
   autoCompleteExpenseList(input) {
-    this.filteredBooklists = this.filterList(this.booklists, 'name', input);
-    this.filteredUsers = this.filterList(this.users, 'nickname', input);
-    this.ui.setLoading(false);
+    if (this.selectedCategories.length === 0) {
+      this.filteredBooklists = this.filterList(this.booklists, 'name', input);
+      this.filteredUsers = this.filterList(this.users, 'nickname', input);
+    } else {
+      let fullBooklists = this.filterList(this.booklists, 'name', input);
+      for (let i = 0; i < fullBooklists.length; i++) {
+        for (let j = 0; j < this.selectedCategories.length; j++) {
+          if (fullBooklists[i].hasOwnProperty('category')) {
+            if (fullBooklists[i].category.name == this.selectedCategories[j]) {
+              this.filteredBooklists.push(fullBooklists[i]);
+            }
+          }
+        }
+      }
+    }
+
+    if (
+      this.filteredBooklists.length === 0 &&
+      this.filteredUsers.length === 0
+    ) {
+      this.canView = false;
+      this.error = true;
+    } else {
+      this.error = false;
+    }
   }
 
   filterList(list, name, value) {
     var categoryList = [];
     if (typeof value != 'string') {
-      return [];
-    }
-    if (value === '' || value === null) {
       return [];
     }
     for (let i = 0; i < list.length; i++) {

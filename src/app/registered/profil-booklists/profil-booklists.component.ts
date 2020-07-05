@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/auth/user';
 import jwtDecode from 'jwt-decode';
 import { UiService } from 'src/app/ui/ui.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profil-booklists',
@@ -24,9 +25,18 @@ export class ProfilBooklistsComponent implements OnInit {
 
     this.userService.find(data.id).subscribe(
       (user) => {
-        this.user = user;
+        if (user.avatar.length !== 0) {
+          user.avatar = user.avatar.replace('/api/media_objects/', '');
 
-        this.ui.setLoading(false);
+          this.userService.getFile(user.avatar).subscribe((avatar: any) => {
+            user.avatar = environment.appliUrl + avatar.contentUrl;
+            this.user = user;
+            this.ui.setLoading(false);
+          });
+        } else {
+          this.user = user;
+          this.ui.setLoading(false);
+        }
       },
       (error) => {
         this.ui.setLoading(false);

@@ -18,6 +18,18 @@ export class UserService {
   }
 
   find(id: number) {
+    return this.http.get<User>(environment.apiUrl + '/users/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + this.auth.getToken(),
+      },
+    });
+  }
+
+  findPublic(id: number) {
     return this.http.get<User>(environment.apiUrl + '/users/' + id);
+  }
+
+  getFile(id: number) {
+    return this.http.get(environment.apiUrl + '/media_objects/' + id);
   }
 }

@@ -1,12 +1,12 @@
-<ng-container *ngIf="booklists">
-  <h1>Rechercher votre liste de livres favorite !</h1>
+<ng-container *ngIf="!loading">
+  <h1 class="pb-2">Rechercher votre liste de livres favorite !</h1>
 
   <form [formGroup]="form" (ngSubmit)="handleSubmit()">
     <div class="input-group md-form form-sm form-2 pl-0">
       <input
         class="form-control my-0 py-1 amber-border"
         type="text"
-        placeholder="Taper le nom ou une partie de la bookList recherchée"
+        placeholder="Tapez le nom de votre booklist ou de votre créateur favori !"
         aria-label="Search"
         formControlName="research"
       />
@@ -14,22 +14,37 @@
         <i class="fas fa-search text-warning" aria-hidden="true"></i>
       </button>
     </div>
+    <div class="pt-4">
+      <h4>Catégories :</h4>
+      <ng-container *ngFor="let c of categories">
+        <input
+          type="checkbox"
+          [id]="c.name"
+          [name]="c.id"
+          [formControlName]="c.name"
+        />
+        <label for="c.name" class="pl-1 pr-3">{{ c.name }}</label>
+      </ng-container>
+    </div>
   </form>
 
-  <div class="researchResult pt-4" *ngIf="filteredBooklists">
+  <div class="researchResult pt-4" *ngIf="canView">
     <h3>Résultats de votre recherche</h3>
-    <ul>
+    <ul *ngIf="!error">
       <li *ngFor="let booklist of filteredBooklists">
-        <a routerLink="research/booklist/{{ booklist.id }}"
+        <a routerLink="booklist/{{ booklist.id }}"
           >{{ booklist.name }}
           <small>de {{ booklist.creatorId.nickname }}</small>
         </a>
       </li>
       <li *ngFor="let user of filteredUsers">
-        <a routerLink="research/users/{{ user.id }}">
-          {{ user.nickname }} (créateur)
+        <a routerLink="user/{{ user.id }}">
+          {{ user.nickname }} <small>(créateur)</small>
         </a>
       </li>
     </ul>
+    <p class="pl-4" *ngIf="error">
+      Aucun résultat trouvé lors de cette recherche
+    </p>
   </div>
 </ng-container>

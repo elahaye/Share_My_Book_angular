@@ -15,6 +15,8 @@ import { ProfilBooklistsComponent } from './registered/profil-booklists/profil-b
 import { BooklistsDetailsComponent } from './registered/booklists-details/booklists-details.component';
 import { BooklistCreateComponent } from './registered/booklist-create/booklist-create.component';
 import { BooklistEditComponent } from './registered/booklist-edit/booklist-edit.component';
+import { BooklistDetailsComponent } from './public/research/booklist-details/booklist-details.component';
+import { UserDetailsComponent } from './public/research/user-details/user-details.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { BooklistEditComponent } from './registered/booklist-edit/booklist-edit.
     BooklistsDetailsComponent,
     BooklistCreateComponent,
     BooklistEditComponent,
+    BooklistDetailsComponent,
+    UserDetailsComponent,
   ],
   imports: [
     BrowserModule,
