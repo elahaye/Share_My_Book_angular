@@ -21,6 +21,7 @@ import { UiService } from 'src/app/ui/ui.service';
   styleUrls: ['./booklist-create.component.scss'],
 })
 export class BooklistCreateComponent implements OnInit {
+  error = '';
   submitted = false;
   user: User;
   categories: Category[] = [];
@@ -54,17 +55,29 @@ export class BooklistCreateComponent implements OnInit {
   ngOnInit(): void {
     this.ui.setLoading(true);
 
-    this.categoryService.findAll().subscribe((categories) => {
-      this.categories = categories;
-    });
+    this.categoryService.findAll().subscribe(
+      (categories) => {
+        this.categories = categories;
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+      }
+    );
     const token = window.localStorage.getItem('token');
 
     const data: any = jwtDecode(token);
 
-    this.userService.find(data['id']).subscribe((user) => {
-      this.user = user;
-      this.ui.setLoading(false);
-    });
+    this.userService.find(data['id']).subscribe(
+      (user) => {
+        this.user = user;
+        this.ui.setLoading(false);
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+      }
+    );
   }
 
   researchBook() {
@@ -92,9 +105,15 @@ export class BooklistCreateComponent implements OnInit {
           })
         )
       )
-      .subscribe((result) => {
-        this.booksFromGoogleApi = result;
-      });
+      .subscribe(
+        (result) => {
+          this.booksFromGoogleApi = result;
+        },
+        (error) => {
+          this.error =
+            'Une erreur est survenue lors du chargement des résultats. Veuillez nous excusez du désagrément.';
+        }
+      );
   }
 
   addToList(book) {
@@ -110,6 +129,7 @@ export class BooklistCreateComponent implements OnInit {
   }
 
   handleSubmit() {
+    this.error = '';
     this.submitted = true;
 
     if (this.booklistForm.invalid) {
@@ -119,23 +139,29 @@ export class BooklistCreateComponent implements OnInit {
     let listBooksId = [];
     // BOOKS
     // 1. Rechercher dans les livres stockés sur API Platform si le livre est déjà présent
-    this.bookService.findAll().subscribe((apiPlatformBooks) => {
-      this.apiPlatformBooks = apiPlatformBooks;
-      const booksToCreate: Book[] = []; // Stocke les livres non-présents dans la BD
+    this.bookService.findAll().subscribe(
+      (apiPlatformBooks) => {
+        this.apiPlatformBooks = apiPlatformBooks;
+        const booksToCreate: Book[] = []; // Stocke les livres non-présents dans la BD
 
-      this.researchBookExistenceInDatabase(
-        listBooksId,
-        apiPlatformBooks,
-        this.booksChosenList,
-        booksToCreate
-      );
+        this.researchBookExistenceInDatabase(
+          listBooksId,
+          apiPlatformBooks,
+          this.booksChosenList,
+          booksToCreate
+        );
 
-      if (booksToCreate.length === 0) {
-        this.createNewBooklist(listBooksId);
-      } else {
-        this.createNewBooks(booksToCreate, listBooksId);
+        if (booksToCreate.length === 0) {
+          this.createNewBooklist(listBooksId);
+        } else {
+          this.createNewBooks(booksToCreate, listBooksId);
+        }
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement des livres. Veuillez nous excusez du désagrément.';
       }
-    });
+    );
   }
 
   researchBookExistenceInDatabase(
@@ -170,13 +196,18 @@ export class BooklistCreateComponent implements OnInit {
       this.bookService.create(item)
     );
 
-    forkJoin(listCallHttpCreateBook).subscribe((result) => {
-      for (let i = 0; i < result.length; i++) {
-        listBooksId.push(result[i]['id']);
+    forkJoin(listCallHttpCreateBook).subscribe(
+      (result) => {
+        for (let i = 0; i < result.length; i++) {
+          listBooksId.push(result[i]['id']);
+        }
+        this.createNewBooklist(listBooksId);
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du téléchargement des livres dans votre booklist. Veuillez nous excusez du désagrément.';
       }
-      this.createNewBooklist(listBooksId);
-    });
-    // this.bookService.create(booksToCreate)
+    );
   }
 
   createNewBooklist(listBooksId) {
@@ -196,8 +227,14 @@ export class BooklistCreateComponent implements OnInit {
       books: listBooksIdToUpload,
     };
 
-    this.booklistService.create(newBooklist).subscribe((result) => {
-      this.router.navigateByUrl('profil');
-    });
+    this.booklistService.create(newBooklist).subscribe(
+      (result) => {
+        this.router.navigateByUrl('profil');
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors de la création de votre booklist. Veuillez nous exucsez du désagrément. Réessayez de nouveau.';
+      }
+    );
   }
 }

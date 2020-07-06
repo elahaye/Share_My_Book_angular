@@ -17,6 +17,11 @@
     <ins>Catégorie</ins> : {{ booklist.category.name }}
   </p>
 
+  <div class="alert alert-dismissible alert-warning" *ngIf="error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <p class="mb-0">{{ error }}</p>
+  </div>
+
   <ul class="pt-4">
     <li *ngFor="let b of booklist['books']" class="listBooks pt-4">
       <div class="row">

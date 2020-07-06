@@ -1,20 +1,7 @@
-import {
-  Component,
-  OnInit,
-  ElementRef,
-  ViewChild,
-  Output,
-} from '@angular/core';
-import {
-  FormGroup,
-  FormControl,
-  FormBuilder,
-  FormArray,
-  AbstractControl,
-} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { UiService } from 'src/app/ui/ui.service';
 import { Booklist } from 'src/app/interface/booklist';
-import { EventEmitter } from 'protractor';
 import { UserService } from 'src/app/service/user.service';
 import { CategoryService } from 'src/app/service/category.service';
 import { User } from 'src/app/interface/user';
@@ -37,7 +24,8 @@ export class ResearchComponent implements OnInit {
   filteredBooklists: Booklist[] = [];
   filteredUsers: User[] = [];
 
-  error = false;
+  error = '';
+  havingResult = false;
   loading = true;
   canView = false;
 
@@ -51,25 +39,44 @@ export class ResearchComponent implements OnInit {
   ngOnInit(): void {
     this.ui.setLoading(true);
     this.loading = true;
-    this.booklistService.findAll().subscribe((booklists) => {
-      for (let i = 0; i < booklists.length; i++) {
-        this.booklists.push(booklists[i]);
+    this.booklistService.findAll().subscribe(
+      (booklists) => {
+        for (let i = 0; i < booklists.length; i++) {
+          this.booklists.push(booklists[i]);
+        }
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }
-    });
-    this.userService.findAll().subscribe((users) => {
-      this.users = users;
-    });
-    this.categoryService.findAll().subscribe((categories) => {
-      for (let i = 0; i < categories.length; i++) {
-        this.form.addControl(categories[i]['name'], new FormControl(''));
+    );
+    this.userService.findAll().subscribe(
+      (users) => {
+        this.users = users;
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }
-      this.categories = categories;
-      this.loading = false;
-      this.ui.setLoading(false);
-    });
+    );
+    this.categoryService.findAll().subscribe(
+      (categories) => {
+        for (let i = 0; i < categories.length; i++) {
+          this.form.addControl(categories[i]['name'], new FormControl(''));
+        }
+        this.categories = categories;
+        this.loading = false;
+        this.ui.setLoading(false);
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+      }
+    );
   }
 
   handleSubmit() {
+    this.error = '';
     this.filteredBooklists = [];
     this.filteredUsers = [];
 
@@ -108,9 +115,9 @@ export class ResearchComponent implements OnInit {
       this.filteredUsers.length === 0
     ) {
       this.canView = false;
-      this.error = true;
+      this.havingResult = true;
     } else {
-      this.error = false;
+      this.havingResult = false;
     }
   }
 

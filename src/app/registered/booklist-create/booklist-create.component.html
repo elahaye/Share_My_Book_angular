@@ -1,6 +1,11 @@
 <ng-container *ngIf="user">
   <h1 class="text-center">Ajouter une bookList</h1>
 
+  <div class="alert alert-dismissible alert-warning" *ngIf="error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <p class="mb-0">{{ error }}</p>
+  </div>
+
   <div class="d-flex flex-row">
     <div class="container">
       <form [formGroup]="booklistForm" (ngSubmit)="handleSubmit()">

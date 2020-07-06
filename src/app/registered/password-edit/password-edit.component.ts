@@ -46,7 +46,7 @@ export class PasswordEditComponent implements OnInit {
       },
       (error) => {
         this.error =
-          'Une erreur semble être survenue lors du chargement de la page. veuillez nous excusez pour le désagrément.';
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez pour le désagrément.';
         this.ui.setLoading(false);
       }
     );

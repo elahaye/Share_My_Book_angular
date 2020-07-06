@@ -25,6 +25,7 @@ export class ProfilEditComponent implements OnInit {
     newPassword: new FormControl(''),
     confirmation: new FormControl(''),
   });
+  error = '';
   submitted = false;
   fileToUpload: File = null;
 
@@ -59,13 +60,11 @@ export class ProfilEditComponent implements OnInit {
         this.ui.setLoading(false);
       },
       (error) => {
+        this.error =
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez pour le désagrément.';
         this.ui.setLoading(false);
       }
     );
-  }
-
-  getErrorForControl(controlName: string) {
-    return this.form.controls[controlName].getError('invalid');
   }
 
   handleFileInput(files: FileList) {
@@ -87,26 +86,15 @@ export class ProfilEditComponent implements OnInit {
       (user) => {
         this.router.navigateByUrl('/profil');
       },
-      (error: HttpErrorResponse) => {
-        // 2 Types d'erreur possibles :
-        // 1) Une erreur 400 avec des violations
-        if (error.status === 400 && error.error.violations) {
-          for (const violation of error.error.violations) {
-            const nomDuChamp = violation.propertyPath;
-            const message = violation.message;
-
-            this.form.controls[nomDuChamp].setErrors({
-              invalid: message,
-            });
-          }
-          return;
-        }
-        // 2) Tout autre type d'erreur
+      (error) => {
+        this.error =
+          'Malheureusement, une erreur semble être survenu, veuillez nous excusez pour le désagrément.';
       }
     );
   }
 
   handleSubmit() {
+    this.error = '';
     this.submitted = true;
 
     if (this.form.invalid) {
@@ -128,7 +116,8 @@ export class ProfilEditComponent implements OnInit {
           this.updateCurrentUser(this.updatedUser);
         },
         (error) => {
-          console.log(error);
+          this.error =
+            'Malheureusement, une erreur semble être survenue lors du téléchargement de votre image. Veuillez nous excusez pour le désagrément. ';
         }
       );
     }

@@ -2,8 +2,14 @@
   <h1>Modification du profil</h1>
 
   <a routerLink="/profil/edit/password" class="pl-5 pt-3 text-warning"
-    ><i class="fas fa-arrow-circle-right"></i> Modifier votre mot de passe ?</a
+    ><i class="fas fa-arrow-circle-right"></i> Vous souhaitez modifier votre mot
+    de passe ?</a
   >
+
+  <div class="alert alert-dismissible alert-warning" *ngIf="error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <p class="mb-0">{{ error }}</p>
+  </div>
 
   <form [formGroup]="form" (ngSubmit)="handleSubmit()">
     <div class="form-group pt-3">
@@ -27,6 +33,7 @@
       <input
         formControlName="avatar"
         type="file"
+        accept="image/png, image/jpeg"
         class="form-control"
         (change)="handleFileInput($event.target.files)"
       />

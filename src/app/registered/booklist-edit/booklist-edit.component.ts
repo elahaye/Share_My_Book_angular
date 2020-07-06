@@ -19,6 +19,7 @@ import { UiService } from 'src/app/ui/ui.service';
   styleUrls: ['./booklist-edit.component.scss'],
 })
 export class BooklistEditComponent implements OnInit {
+  error = '';
   submitted = false;
   user: User;
   categories: Category[] = [];
@@ -53,12 +54,18 @@ export class BooklistEditComponent implements OnInit {
   ngOnInit(): void {
     this.ui.setLoading(true);
 
-    this.categoryService.findAll().subscribe((categories) => {
-      this.categories = categories.map((item) => ({
-        ...item,
-        id: item.id.toString(),
-      }));
-    });
+    this.categoryService.findAll().subscribe(
+      (categories) => {
+        this.categories = categories.map((item) => ({
+          ...item,
+          id: item.id.toString(),
+        }));
+      },
+      (error) => {
+        this.error =
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez pour le désagrément.';
+      }
+    );
 
     // TODO: Aller chercher le customer via l'API (basé sur l'id qui est dans la route)
     this.route.paramMap
@@ -66,23 +73,29 @@ export class BooklistEditComponent implements OnInit {
         map((params) => +params.get('id')),
         switchMap((id) => this.booklistService.find(id))
       )
-      .subscribe((booklist) => {
-        this.previousBooklist = booklist;
-        if (this.previousBooklist.hasOwnProperty('category')) {
-          const splittedCategory = this.previousBooklist.category['@id'].split(
-            '/'
-          );
-          this.previousBooklist.category =
-            splittedCategory[splittedCategory.length - 1];
-        }
+      .subscribe(
+        (booklist) => {
+          this.previousBooklist = booklist;
+          if (this.previousBooklist.hasOwnProperty('category')) {
+            const splittedCategory = this.previousBooklist.category[
+              '@id'
+            ].split('/');
+            this.previousBooklist.category =
+              splittedCategory[splittedCategory.length - 1];
+          }
 
-        this.booklistForm.patchValue(this.previousBooklist);
+          this.booklistForm.patchValue(this.previousBooklist);
 
-        for (let i = 0; i < booklist['books'].length; i++) {
-          this.booksChosenList.push(booklist['books'][i]);
+          for (let i = 0; i < booklist['books'].length; i++) {
+            this.booksChosenList.push(booklist['books'][i]);
+          }
+          this.ui.setLoading(false);
+        },
+        (error) => {
+          this.error =
+            'Une erreur semble être survenue lors du chargement des données de la booklist. Veuillez nous excuser du désagrément.';
         }
-        this.ui.setLoading(false);
-      });
+      );
   }
 
   researchBook() {
@@ -109,9 +122,15 @@ export class BooklistEditComponent implements OnInit {
           })
         )
       )
-      .subscribe((result) => {
-        this.booksFromGoogleApi = result;
-      });
+      .subscribe(
+        (result) => {
+          this.booksFromGoogleApi = result;
+        },
+        (error) => {
+          this.error =
+            'Une erreur semble être survenue durant le chargement des résultats de votre requête. Veuillez nous excusez pour le désagrément.';
+        }
+      );
   }
 
   addToList(book) {
@@ -125,6 +144,7 @@ export class BooklistEditComponent implements OnInit {
   }
 
   handleSubmit() {
+    this.error = '';
     this.submitted = true;
 
     if (this.booklistForm.invalid) {
@@ -185,12 +205,18 @@ export class BooklistEditComponent implements OnInit {
       this.bookService.create(item)
     );
 
-    forkJoin(listCallHttpCreateBook).subscribe((result) => {
-      for (let i = 0; i < result.length; i++) {
-        listBooksId.push(result[i]['id']);
+    forkJoin(listCallHttpCreateBook).subscribe(
+      (result) => {
+        for (let i = 0; i < result.length; i++) {
+          listBooksId.push(result[i]['id']);
+        }
+        this.updateBooklist(listBooksId);
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue durant le téléchargement des livres de votre booklist. Veuillez nous excuser du désagrément.';
       }
-      this.updateBooklist(listBooksId);
-    });
+    );
   }
 
   updateBooklist(listBooksId) {
@@ -212,8 +238,14 @@ export class BooklistEditComponent implements OnInit {
       books: listBooksIdToUpload,
     };
 
-    this.booklistService.update(updatedBooklist).subscribe((result) => {
-      this.router.navigateByUrl('profil');
-    });
+    this.booklistService.update(updatedBooklist).subscribe(
+      (result) => {
+        this.router.navigateByUrl('profil');
+      },
+      (error) => {
+        this.error =
+          "Une erreur est survenue lors de l'enregistrement de votre booklist. Veuillez nous excusez du désagrément. Réessayez de nouveau !";
+      }
+    );
   }
 }

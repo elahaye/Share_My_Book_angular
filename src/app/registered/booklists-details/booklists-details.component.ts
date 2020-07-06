@@ -12,6 +12,7 @@ import { Category } from '../../interface/category';
   styleUrls: ['./booklists-details.component.scss'],
 })
 export class BooklistsDetailsComponent implements OnInit {
+  error = '';
   id: number;
   booklist: Booklist;
 
@@ -26,17 +27,36 @@ export class BooklistsDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.ui.setLoading(true);
 
-    this.route.params.subscribe((params) => {
-      this.id = params['id'];
-    });
-    this.booklistService.find(this.id).subscribe((booklist) => {
-      this.booklist = booklist;
-      this.ui.setLoading(false);
-    });
+    this.route.params.subscribe(
+      (params) => {
+        this.id = params['id'];
+        this.booklistService.find(this.id).subscribe(
+          (booklist) => {
+            this.booklist = booklist;
+            this.ui.setLoading(false);
+          },
+          (error) => {
+            this.error =
+              'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez pour le désagrément.';
+          }
+        );
+      },
+      (error) => {
+        this.error =
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez pour le désagrément.';
+      }
+    );
   }
 
   handleDelete(booklist: Booklist) {
-    this.booklistService.delete(booklist.id).subscribe(() => {});
-    this.router.navigateByUrl('/profil-booklists');
+    this.booklistService.delete(booklist.id).subscribe(
+      () => {
+        this.router.navigateByUrl('/profil');
+      },
+      (error) => {
+        this.error =
+          'Une erreur semble être survenue lors de la suppression de la booklist. Veuillez nous excusez pour le désagréement.';
+      }
+    );
   }
 }

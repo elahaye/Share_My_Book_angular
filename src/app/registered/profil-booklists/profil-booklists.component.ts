@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./profil-booklists.component.scss'],
 })
 export class ProfilBooklistsComponent implements OnInit {
+  error = '';
   user: User;
 
   constructor(private userService: UserService, private ui: UiService) {}
@@ -28,17 +29,25 @@ export class ProfilBooklistsComponent implements OnInit {
         if (user.avatar.length !== 0) {
           user.avatar = user.avatar.replace('/api/media_objects/', '');
 
-          this.userService.getFile(user.avatar).subscribe((avatar: any) => {
-            user.avatar = environment.appliUrl + avatar.contentUrl;
-            this.user = user;
-            this.ui.setLoading(false);
-          });
+          this.userService.getFile(user.avatar).subscribe(
+            (avatar: any) => {
+              user.avatar = environment.appliUrl + avatar.contentUrl;
+              this.user = user;
+              this.ui.setLoading(false);
+            },
+            (error) => {
+              this.error =
+                'Une erreur semble être survenue lors du chargement de votre avatar. euillez nous excusez pour le désagrément.';
+            }
+          );
         } else {
           this.user = user;
           this.ui.setLoading(false);
         }
       },
       (error) => {
+        this.error =
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez pour le désagrément.';
         this.ui.setLoading(false);
       }
     );

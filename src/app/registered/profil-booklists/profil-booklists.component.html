@@ -1,6 +1,13 @@
 <ng-container *ngIf="user">
   <div class="d-flex flex-row">
     <div class="container">
+      <div class="alert alert-dismissible alert-warning" *ngIf="error">
+        <button type="button" class="close" data-dismiss="alert">
+          &times;
+        </button>
+        <p class="mb-0">{{ error }}</p>
+      </div>
+
       <h1 class="d-flex flew-row align-items-center">
         <span class="badge badge-pill badge-warning mb-2"
           >Profil de {{ user["nickname"] }}</span

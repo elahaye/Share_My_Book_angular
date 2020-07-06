@@ -13,6 +13,7 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./booklist-details.component.scss'],
 })
 export class BooklistDetailsComponent implements OnInit {
+  error = '';
   id: number;
   booklist: Booklist;
 
@@ -28,30 +29,46 @@ export class BooklistDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.ui.setLoading(true);
 
-    this.route.params.subscribe((params) => {
-      this.id = params['id'];
-    });
-    this.booklistService.find(this.id).subscribe((booklist) => {
-      if (booklist.creatorId.avatar.length !== 0) {
-        booklist.creatorId.avatar = booklist.creatorId.avatar.replace(
-          '/api/media_objects/',
-          ''
-        );
+    this.route.params.subscribe(
+      (params) => {
+        this.id = params['id'];
+        this.booklistService.find(this.id).subscribe(
+          (booklist) => {
+            if (booklist.creatorId.avatar.length !== 0) {
+              booklist.creatorId.avatar = booklist.creatorId.avatar.replace(
+                '/api/media_objects/',
+                ''
+              );
 
-        this.userService
-          .getFile(booklist.creatorId.avatar)
-          .subscribe((avatar: any) => {
-            booklist.creatorId.avatar =
-              environment.appliUrl + avatar.contentUrl;
+              this.userService.getFile(booklist.creatorId.avatar).subscribe(
+                (avatar: any) => {
+                  booklist.creatorId.avatar =
+                    environment.appliUrl + avatar.contentUrl;
+                  this.booklist = booklist;
+                  this.ui.setLoading(false);
+                },
+                (error) => {
+                  this.error =
+                    "Une erreur est survenue lors du chargement de l'avatar du créateur. Veuillez nous excusez du désagrément.";
+                }
+              );
+            } else {
+              this.booklist = booklist;
+              this.ui.setLoading(false);
+            }
             this.booklist = booklist;
             this.ui.setLoading(false);
-          });
-      } else {
-        this.booklist = booklist;
-        this.ui.setLoading(false);
+          },
+          (error) => {
+            this.error =
+              'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+          }
+        );
+      },
+      (error) => {
+        this.error =
+          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }
-      this.booklist = booklist;
-      this.ui.setLoading(false);
-    });
+    );
   }
 }

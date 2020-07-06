@@ -1,6 +1,11 @@
 <ng-container *ngIf="!loading">
   <h1 class="pb-2">Rechercher votre liste de livres favorite !</h1>
 
+  <div class="alert alert-dismissible alert-warning" *ngIf="error">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <p class="mb-0">{{ error }}</p>
+  </div>
+
   <form [formGroup]="form" (ngSubmit)="handleSubmit()">
     <div class="input-group md-form form-sm form-2 pl-0">
       <input
@@ -30,7 +35,7 @@
 
   <div class="researchResult pt-4" *ngIf="canView">
     <h3>Résultats de votre recherche</h3>
-    <ul *ngIf="!error">
+    <ul *ngIf="!havingResult">
       <li *ngFor="let booklist of filteredBooklists">
         <a routerLink="booklist/{{ booklist.id }}"
           >{{ booklist.name }}
@@ -43,7 +48,7 @@
         </a>
       </li>
     </ul>
-    <p class="pl-4" *ngIf="error">
+    <p class="pl-4" *ngIf="havingResult">
       Aucun résultat trouvé lors de cette recherche
     </p>
   </div>
