@@ -1,0 +1,37 @@
+<ng-container *ngIf="user">
+  <h1>Modification du profil</h1>
+
+  <a routerLink="/profil/edit/password" class="pl-5 pt-3 text-warning"
+    ><i class="fas fa-arrow-circle-right"></i> Modifier votre mot de passe ?</a
+  >
+
+  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+    <div class="form-group pt-3">
+      <label>Changer votre pseudonyme</label>
+      <input
+        formControlName="nickname"
+        type="text"
+        class="form-control"
+        [class.is-invalid]="form.controls['nickname'].invalid && submitted"
+        placeholder="Pseudonyme (ex: John Doe)"
+      />
+      <p
+        class="invalid-feedback"
+        *ngIf="form.controls['nickname'].hasError('required')"
+      >
+        Le pseudonyme est obligatoire.
+      </p>
+    </div>
+    <div class="form-group">
+      <label>Changer votre avatar</label>
+      <input
+        formControlName="avatar"
+        type="file"
+        class="form-control"
+        (change)="handleFileInput($event.target.files)"
+      />
+    </div>
+
+    <button class="btn btn-warning">Modifier mon profil</button>
+  </form>
+</ng-container>

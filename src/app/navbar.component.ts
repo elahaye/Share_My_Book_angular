@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './service/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
             <a class="nav-link" routerLink="/research">Recherche</a>
           </li>
           <li class="nav-item active" *ngIf="isAuthenticated">
-            <a class="nav-link" routerLink="/profil-booklists">Mes bookLists</a>
+            <a class="nav-link" routerLink="/profil">Mes booklists</a>
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">

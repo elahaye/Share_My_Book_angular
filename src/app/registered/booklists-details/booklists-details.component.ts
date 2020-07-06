@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { BooklistService } from '../booklist.service';
+import { BooklistService } from '../../service/booklist.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Booklist } from '../booklist';
+import { Booklist } from '../../interface/booklist';
 import { UiService } from 'src/app/ui/ui.service';
-import { CategoryService } from '../category.service';
-import { Category } from '../category';
+import { CategoryService } from '../../service/category.service';
+import { Category } from '../../interface/category';
 
 @Component({
   selector: 'app-booklists-details',

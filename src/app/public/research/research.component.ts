@@ -13,13 +13,13 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { UiService } from 'src/app/ui/ui.service';
-import { BooklistService } from '../booklist.service';
-import { Booklist } from 'src/app/registered/booklist';
+import { Booklist } from 'src/app/interface/booklist';
 import { EventEmitter } from 'protractor';
-import { UserService } from 'src/app/registered/user.service';
-import { CategoryService } from 'src/app/registered/category.service';
-import { User } from 'src/app/auth/user';
-import { Category } from 'src/app/registered/category';
+import { UserService } from 'src/app/service/user.service';
+import { CategoryService } from 'src/app/service/category.service';
+import { User } from 'src/app/interface/user';
+import { Category } from 'src/app/interface/category';
+import { BooklistService } from 'src/app/service/booklist.service';
 
 @Component({
   selector: 'app-research',

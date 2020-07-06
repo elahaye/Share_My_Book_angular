@@ -6,19 +6,39 @@
       formControlName="nickname"
       type="text"
       class="form-control"
-      placeholder="Pseudonyme (ex: John Doe)"
+      [class.is-invalid]="form.controls['nickname'].invalid && submitted"
+      placeholder="Pseudonyme (ex: John Smith)"
     />
+    <p
+      class="invalid-feedback"
+      *ngIf="form.controls['nickname'].hasError('required')"
+    >
+      Le pseudonyme est obligatoire.
+    </p>
   </div>
   <div class="form-group">
     <input
       formControlName="email"
       type="email"
       class="form-control"
+      [class.is-invalid]="form.controls['email'].invalid && submitted"
       placeholder="Adresse email"
     />
+    <p
+      class="invalid-feedback"
+      *ngIf="form.controls['email'].hasError('required')"
+    >
+      L'email est obligatoire.
+    </p>
+    <p
+      class="invalid-feedback"
+      *ngIf="form.controls['email'].hasError('email')"
+    >
+      Le format de l'adresse n'est pas valide.
+    </p>
   </div>
   <div class="form-group">
-    <label>Une image représentant votre avatar</label>
+    <label>Choisissez une image représentant votre avatar (optionnel)</label>
     <input
       formControlName="avatar"
       type="file"
@@ -31,16 +51,30 @@
       formControlName="password"
       type="password"
       class="form-control"
+      [class.is-invalid]="form.controls['password'].invalid && submitted"
       placeholder="Mot de passe"
     />
+    <p
+      class="invalid-feedback"
+      *ngIf="form.controls['password'].hasError('required')"
+    >
+      Le mot de passe est obligatoire.
+    </p>
   </div>
   <div class="form-group">
     <input
       formControlName="confirmation"
       type="password"
       class="form-control"
+      [class.is-invalid]="form.controls['confirmation'].invalid && submitted"
       placeholder="Confirmation du mot de passe"
     />
+    <p
+      class="invalid-feedback"
+      *ngIf="form.controls['confirmation'].hasError('required')"
+    >
+      La confirmation du mot de passe est obligatoire.
+    </p>
   </div>
 
   <button class="btn btn-warning">Je m'inscris</button>

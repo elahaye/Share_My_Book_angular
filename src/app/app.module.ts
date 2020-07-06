@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar.component';
 import { ResearchComponent } from './public/research/research.component';
 import { FrontpageComponent } from './public/frontpage/frontpage.component';
-import { BooklistService } from './public/booklist.service';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { ProfilBooklistsComponent } from './registered/profil-booklists/profil-booklists.component';
@@ -17,6 +16,9 @@ import { BooklistCreateComponent } from './registered/booklist-create/booklist-c
 import { BooklistEditComponent } from './registered/booklist-edit/booklist-edit.component';
 import { BooklistDetailsComponent } from './public/research/booklist-details/booklist-details.component';
 import { UserDetailsComponent } from './public/research/user-details/user-details.component';
+import { ProfilEditComponent } from './registered/profil-edit/profil-edit.component';
+import { BooklistService } from './service/booklist.service';
+import { PasswordEditComponent } from './registered/password-edit/password-edit.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { UserDetailsComponent } from './public/research/user-details/user-detail
     BooklistEditComponent,
     BooklistDetailsComponent,
     UserDetailsComponent,
+    ProfilEditComponent,
+    PasswordEditComponent,
   ],
   imports: [
     BrowserModule,

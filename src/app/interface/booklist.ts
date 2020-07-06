@@ -1,4 +1,4 @@
-import { User } from '../auth/user';
+import { User } from './user';
 import { Book } from './book';
 
 export interface Booklist {

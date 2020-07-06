@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.auth.authenticate(this.form.value).subscribe((data) => {
-      this.router.navigateByUrl('/profil-booklists');
+      this.router.navigateByUrl('/profil');
     });
   }
 }

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth.service';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
-import { Book } from './book';
+import { Book } from '../interface/book';
 
 @Injectable({
   providedIn: 'root',

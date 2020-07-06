@@ -1,10 +1,15 @@
 <ng-container *ngIf="user">
   <div class="d-flex flex-row">
     <div class="container">
-      <h1>
+      <h1 class="d-flex flew-row align-items-center">
         <span class="badge badge-pill badge-warning mb-2"
           >Profil de {{ user["nickname"] }}</span
         >
+        <a
+          class="btn btn-light border border-warning ml-1 mr-1"
+          routerLink="/profil/edit"
+          ><i class="fas fa-edit text-warning"></i
+        ></a>
       </h1>
       <ng-container *ngIf="user.avatar">
         <img

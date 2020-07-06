@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CategoryService } from '../category.service';
-import { Category } from '../category';
-import { BookService } from '../book.service';
-import { Book } from '../book';
+import { CategoryService } from '../../service/category.service';
+import { Category } from '../../interface/category';
+import { BookService } from '../../service/book.service';
+import { Book } from '../../interface/book';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { BooklistService } from '../booklist.service';
-import { Booklist } from '../booklist';
-import { User } from 'src/app/auth/user';
+import { BooklistService } from '../../service/booklist.service';
+import { Booklist } from '../../interface/booklist';
+import { User } from 'src/app/interface/user';
 import { map, switchMap } from 'rxjs/operators';
 import { UiService } from 'src/app/ui/ui.service';
 
@@ -19,6 +19,7 @@ import { UiService } from 'src/app/ui/ui.service';
   styleUrls: ['./booklist-edit.component.scss'],
 })
 export class BooklistEditComponent implements OnInit {
+  submitted = false;
   user: User;
   categories: Category[] = [];
   status = ['public', 'privé'];
@@ -68,7 +69,9 @@ export class BooklistEditComponent implements OnInit {
       .subscribe((booklist) => {
         this.previousBooklist = booklist;
         if (this.previousBooklist.hasOwnProperty('category')) {
-          const splittedCategory = this.previousBooklist.category.split('/');
+          const splittedCategory = this.previousBooklist.category['@id'].split(
+            '/'
+          );
           this.previousBooklist.category =
             splittedCategory[splittedCategory.length - 1];
         }
@@ -88,13 +91,20 @@ export class BooklistEditComponent implements OnInit {
       .pipe(
         map((result) =>
           result['items'].map((book) => {
+            if (book.volumeInfo.totalPages === undefined) {
+              book.volumeInfo.totalPages === 0;
+            }
+            if (book.volumeInfo.imageLinks === undefined) {
+              book.volumeInfo.imageLinks = {};
+              book.volumeInfo.imageLinks.smallThumbnail === '';
+            }
             return {
-              referenceApi: book['id'],
-              title: book['volumeInfo']['title'],
-              author: book['volumeInfo']['authors'],
-              publicationDate: book['volumeInfo']['publishedDate'],
-              totalPages: book['volumeInfo']['pageCount'],
-              image: book['volumeInfo']['imageLinks']['smallThumbnail'],
+              referenceApi: book.id,
+              title: book.volumeInfo.title,
+              author: book.volumeInfo.authors,
+              publicationDate: book.volumeInfo.publishedDate,
+              totalPages: book.volumeInfo.pageCount,
+              image: book.volumeInfo.imageLinks.smallThumbnail,
             };
           })
         )
@@ -115,6 +125,12 @@ export class BooklistEditComponent implements OnInit {
   }
 
   handleSubmit() {
+    this.submitted = true;
+
+    if (this.booklistForm.invalid) {
+      return;
+    }
+
     let listBooksId = [];
     // BOOKS
     // 1. Rechercher dans les livres stockés sur API Platform si le livre est déjà présent
@@ -188,7 +204,7 @@ export class BooklistEditComponent implements OnInit {
 
     let updatedBooklist = {
       id: this.previousBooklist.id,
-      creatorId: this.previousBooklist.creatorId,
+      creatorId: this.previousBooklist.creatorId['@id'],
       name: this.booklistForm.value['name'],
       category: 'api/categories/' + this.booklistForm.value['category'],
       status: this.booklistForm.value['status'],
@@ -196,7 +212,8 @@ export class BooklistEditComponent implements OnInit {
       books: listBooksIdToUpload,
     };
 
-    this.booklistService.update(updatedBooklist).subscribe((result) => {});
-    this.router.navigateByUrl('profil-booklists');
+    this.booklistService.update(updatedBooklist).subscribe((result) => {
+      this.router.navigateByUrl('profil');
+    });
   }
 }

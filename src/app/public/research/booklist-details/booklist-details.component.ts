@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Booklist } from 'src/app/registered/booklist';
-import { CategoryService } from 'src/app/registered/category.service';
+import { Booklist } from 'src/app/interface/booklist';
+import { CategoryService } from 'src/app/service/category.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UiService } from 'src/app/ui/ui.service';
-import { BooklistService } from 'src/app/registered/booklist.service';
+import { BooklistService } from 'src/app/service/booklist.service';
 import { environment } from 'src/environments/environment';
-import { UserService } from 'src/app/registered/user.service';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-booklist-details',
