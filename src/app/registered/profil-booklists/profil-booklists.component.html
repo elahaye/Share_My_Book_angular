@@ -22,14 +22,14 @@
         <img
           src="{{ user.avatar }}"
           alt="Photo de profil de {{ user['nickname'] }}"
-          class="profilImage"
+          class="profilImage ml-3"
         />
       </ng-container>
       <ng-container *ngIf="!user.avatar">
         <img
           src="../../../assets/images/anonyme.jpg"
           alt="Photo de profil de {{ user['nickname'] }}"
-          class="profilImage"
+          class="profilImage ml-3"
         />
       </ng-container>
 

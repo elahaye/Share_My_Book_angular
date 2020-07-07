@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { identifierModuleUrl } from '@angular/compiler';
 import { UserService } from 'src/app/service/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -16,19 +17,19 @@ export class RegisterComponent implements OnInit {
     nickname: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
     avatar: new FormControl(''),
-    password: new FormControl('', Validators.required),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(5),
+    ]),
     confirmation: new FormControl('', Validators.required),
   });
   submitted = false;
+  error = '';
   fileToUpload: File = null;
 
   constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {}
-
-  getErrorForControl(controlName: string) {
-    return this.form.controls[controlName].getError('invalid');
-  }
 
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
@@ -39,58 +40,98 @@ export class RegisterComponent implements OnInit {
         data = this.fileToUpload;
       },
       (error) => {
-        console.log(error);
+        this.error =
+          'Une erreur est survenue lors du téléchargement de votre image. Veuillez nous excusez de ce désafgrément.';
       }
     );
   }
 
-  registerUser(values) {
-    this.userService.create(values).subscribe(
-      (user) => {
-        this.router.navigateByUrl('/login');
-      },
-      (error: HttpErrorResponse) => {
-        // 2 Types d'erreur possibles :
-        // 1) Une erreur 400 avec des violations
-        if (error.status === 400 && error.error.violations) {
-          for (const violation of error.error.violations) {
-            const nomDuChamp = violation.propertyPath;
-            const message = violation.message;
-
-            this.form.controls[nomDuChamp].setErrors({
-              invalid: message,
-            });
-          }
-          return;
+  registerUser(values, validation) {
+    if (this.form.value.password === this.form.value.confirmation) {
+      console.log(values);
+      this.userService.create(values).subscribe(
+        (user) => {
+          validation;
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            onOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer);
+              toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+          });
+          this.router.navigateByUrl('/login');
+          Toast.fire({
+            icon: 'success',
+            title: 'Enregistrement réussi ! Connectez-vous maintenant !',
+          });
+        },
+        (error) => {
+          this.error =
+            'Une erreur est survenue lors de la création de votre compte. Veuillez nous excusez pour ce désagrément. Réessayez de nouveau !';
         }
-        // 2) Tout autre type d'erreur
-      }
-    );
+      );
+    } else {
+      this.error =
+        'Le mot de passe indiqué et sa confirmation ne corresponsent pas. Veuillez recommencer.';
+    }
   }
 
   handleSubmit() {
+    this.error = '';
     this.submitted = true;
 
     if (this.form.invalid) {
       return;
     }
 
-    this.form.value.registrationDate = new Date();
-    this.form.value.roles = ['ROLE_USER'];
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-warning ml-1',
+        cancelButton: 'btn btn-secondary mr-1',
+      },
+      buttonsStyling: false,
+    });
 
-    if (this.fileToUpload == null) {
-      this.registerUser(this.form.value);
-    } else {
-      this.userService.postFile(this.fileToUpload).subscribe(
-        (data) => {
-          this.form.value.avatar = data['@id'];
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Avez-vous bien vérifier vos informations ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, vas-y',
+        cancelButtonText: 'Non, annule',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.value) {
+          this.form.value.registrationDate = new Date();
+          this.form.value.roles = ['ROLE_USER'];
 
-          this.registerUser(this.form.value);
-        },
-        (error) => {
-          console.log(error);
+          if (this.fileToUpload == null) {
+            this.registerUser(this.form.value);
+          } else {
+            this.userService.postFile(this.fileToUpload).subscribe(
+              (data) => {
+                this.form.value.avatar = data['@id'];
+
+                let validation = swalWithBootstrapButtons.fire(
+                  'Validation',
+                  'Votre enregistrement est un succès.',
+                  'success'
+                );
+
+                this.registerUser(this.form.value, validation);
+              },
+              (error) => {
+                this.error =
+                  'Une erreur est survenue lors du téléchargement de votre image. Veuillez nous excusez de ce désagrément.';
+              }
+            );
+          }
         }
-      );
-    }
+      });
   }
 }

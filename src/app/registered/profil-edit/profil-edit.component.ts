@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 import { UserService } from '../../service/user.service';
 import { AuthService } from 'src/app/service/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profil-edit',
@@ -81,9 +82,10 @@ export class ProfilEditComponent implements OnInit {
     );
   }
 
-  updateCurrentUser(updatedUser) {
+  updateCurrentUser(updatedUser, validation) {
     this.userService.update(updatedUser).subscribe(
       (user) => {
+        validation;
         this.router.navigateByUrl('/profil');
       },
       (error) => {
@@ -101,25 +103,55 @@ export class ProfilEditComponent implements OnInit {
       return;
     }
 
-    if (this.fileToUpload == null) {
-      this.updatedUser = { ...this.user, nickname: this.form.value.nickname };
-      this.updateCurrentUser(this.updatedUser);
-    } else {
-      this.userService.postFile(this.fileToUpload).subscribe(
-        (data) => {
-          this.form.value.avatar = data['@id'];
-          this.updatedUser = {
-            ...this.user,
-            nickname: this.form.value.nickname,
-            avatar: this.form.value.avatar,
-          };
-          this.updateCurrentUser(this.updatedUser);
-        },
-        (error) => {
-          this.error =
-            'Malheureusement, une erreur semble être survenue lors du téléchargement de votre image. Veuillez nous excusez pour le désagrément. ';
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-warning ml-1',
+        cancelButton: 'btn btn-secondary mr-1',
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Etes-vous sûre de vouloir modifier votre profil ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, vas-y',
+        cancelButtonText: 'Non, annule',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.value) {
+          let validation = swalWithBootstrapButtons.fire(
+            'Validation',
+            'Votre profil a bien été modifié.',
+            'success'
+          );
+
+          if (this.fileToUpload == null) {
+            this.updatedUser = {
+              ...this.user,
+              nickname: this.form.value.nickname,
+            };
+            this.updateCurrentUser(this.updatedUser, validation);
+          } else {
+            this.userService.postFile(this.fileToUpload).subscribe(
+              (data) => {
+                this.form.value.avatar = data['@id'];
+                this.updatedUser = {
+                  ...this.user,
+                  nickname: this.form.value.nickname,
+                  avatar: this.form.value.avatar,
+                };
+                this.updateCurrentUser(this.updatedUser, validation);
+              },
+              (error) => {
+                this.error =
+                  'Malheureusement, une erreur semble être survenue lors du téléchargement de votre image. Veuillez nous excusez pour le désagrément. ';
+              }
+            );
+          }
         }
-      );
-    }
+      });
   }
 }

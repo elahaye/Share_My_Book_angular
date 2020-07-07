@@ -23,9 +23,7 @@ export class UserService {
   }
 
   create(user: User) {
-    //Appel POST
     return this.http.post<User>(environment.apiUrl + '/users', user);
-    // return this.http.post<User>('http://localhost:3000/api/users', user);
   }
 
   update(user: User) {

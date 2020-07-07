@@ -12,6 +12,7 @@ import { Booklist } from '../../interface/booklist';
 import { User } from 'src/app/interface/user';
 import { map, switchMap } from 'rxjs/operators';
 import { UiService } from 'src/app/ui/ui.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-booklist-edit',
@@ -104,19 +105,33 @@ export class BooklistEditComponent implements OnInit {
       .pipe(
         map((result) =>
           result['items'].map((book) => {
-            if (book.volumeInfo.totalPages === undefined) {
-              book.volumeInfo.totalPages === 0;
-            }
             if (book.volumeInfo.imageLinks === undefined) {
-              book.volumeInfo.imageLinks = {};
-              book.volumeInfo.imageLinks.smallThumbnail === '';
+              book.volumeInfo.imageLinks = {
+                smallThumbnail: '',
+              };
+            }
+
+            if (book.volumeInfo.authors === undefined) {
+              book.volumeInfo.authors = 'non-précisé';
+            } else {
+              if (book.volumeInfo.authors.length > 0) {
+                book.volumeInfo.authors = book.volumeInfo.authors.join(' ');
+              } else {
+                book.volumeInfo.authors = book.volumeInfo.authors[0];
+              }
             }
             return {
               referenceApi: book.id,
               title: book.volumeInfo.title,
               author: book.volumeInfo.authors,
-              publicationDate: book.volumeInfo.publishedDate,
-              totalPages: book.volumeInfo.pageCount,
+              publicationDate:
+                book.volumeInfo.publishedDate === undefined
+                  ? '0000'
+                  : book.volumeInfo.publishedDate,
+              totalPages:
+                book.volumeInfo.pageCount === undefined
+                  ? 0
+                  : book.volumeInfo.pageCount,
               image: book.volumeInfo.imageLinks.smallThumbnail,
             };
           })
@@ -134,8 +149,18 @@ export class BooklistEditComponent implements OnInit {
   }
 
   addToList(book) {
-    book.author = book.author.join(', ');
-    this.booksChosenList.push(book);
+    this.error = '';
+    let isPresent = false;
+    for (let i = 0; i < this.booksChosenList.length; i++) {
+      if (this.booksChosenList[i].referenceApi === book.referenceApi) {
+        this.error = 'Ce livre est déjà présent dans votre booklist.';
+        isPresent = true;
+        return;
+      }
+    }
+    if (!isPresent) {
+      this.booksChosenList.push(book);
+    }
   }
 
   deleteFromList(book) {
@@ -151,26 +176,51 @@ export class BooklistEditComponent implements OnInit {
       return;
     }
 
-    let listBooksId = [];
-    // BOOKS
-    // 1. Rechercher dans les livres stockés sur API Platform si le livre est déjà présent
-    this.bookService.findAll().subscribe((apiPlatformBooks) => {
-      this.apiPlatformBooks = apiPlatformBooks;
-      const booksToCreate: Book[] = []; // Stocke les livres non-présents dans la BD
-
-      this.researchBookExistenceInDatabase(
-        listBooksId,
-        apiPlatformBooks,
-        this.booksChosenList,
-        booksToCreate
-      );
-
-      if (booksToCreate.length === 0) {
-        this.updateBooklist(listBooksId);
-      } else {
-        this.createNewBooks(booksToCreate, listBooksId);
-      }
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-warning ml-1',
+        cancelButton: 'btn btn-secondary mr-1',
+      },
+      buttonsStyling: false,
     });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Etes-vous sûre de vouloir enregistrer votre booklist ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, vas-y',
+        cancelButtonText: 'Non, annule',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        let listBooksId = [];
+        // BOOKS
+        // 1. Rechercher dans les livres stockés sur API Platform si le livre est déjà présent
+        this.bookService.findAll().subscribe((apiPlatformBooks) => {
+          this.apiPlatformBooks = apiPlatformBooks;
+          const booksToCreate: Book[] = []; // Stocke les livres non-présents dans la BD
+
+          this.researchBookExistenceInDatabase(
+            listBooksId,
+            apiPlatformBooks,
+            this.booksChosenList,
+            booksToCreate
+          );
+
+          let validation = swalWithBootstrapButtons.fire(
+            'Validation',
+            'Votre booklist a bien été enregistrée.',
+            'success'
+          );
+
+          if (booksToCreate.length === 0) {
+            this.updateBooklist(listBooksId, validation);
+          } else {
+            this.createNewBooks(booksToCreate, listBooksId, validation);
+          }
+        });
+      });
   }
 
   researchBookExistenceInDatabase(
@@ -200,26 +250,25 @@ export class BooklistEditComponent implements OnInit {
     });
   }
 
-  createNewBooks(booksToCreate, listBooksId) {
-    const listCallHttpCreateBook = booksToCreate.map((item) =>
+  createNewBooks(booksToCreate, listBooksId, validation) {
+    const callHttpBooksToCreate = booksToCreate.map((item) =>
       this.bookService.create(item)
     );
-
-    forkJoin(listCallHttpCreateBook).subscribe(
-      (result) => {
+    forkJoin(callHttpBooksToCreate).subscribe(
+      (result: Book[]) => {
         for (let i = 0; i < result.length; i++) {
-          listBooksId.push(result[i]['id']);
+          listBooksId.push(result[i].id);
         }
-        this.updateBooklist(listBooksId);
+        this.updateBooklist(listBooksId, validation);
       },
       (error) => {
         this.error =
-          'Une erreur est survenue durant le téléchargement des livres de votre booklist. Veuillez nous excuser du désagrément.';
+          'Une erreur est survenue lors du chargement des livres dans votre booklist. Veuillez nous excuser du désagrément.';
       }
     );
   }
 
-  updateBooklist(listBooksId) {
+  updateBooklist(listBooksId, validation) {
     // BOOKLIST
 
     const listBooksIdToUpload = [];
@@ -240,6 +289,7 @@ export class BooklistEditComponent implements OnInit {
 
     this.booklistService.update(updatedBooklist).subscribe(
       (result) => {
+        validation;
         this.router.navigateByUrl('profil');
       },
       (error) => {

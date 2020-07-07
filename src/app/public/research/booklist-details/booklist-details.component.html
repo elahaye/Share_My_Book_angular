@@ -1,8 +1,8 @@
 <ng-container *ngIf="booklist">
-  <h2>{{ booklist.name }}</h2>
+  <h1>{{ booklist.name }}</h1>
   <div class="d-flex flex-row align-items-center pl-4">
     <img
-      class="creatorImg"
+      class="creatorImg m-2"
       src="{{ booklist.creatorId.avatar }}"
       alt="{{ booklist.creatorId.nickname }}"
     />
@@ -32,6 +32,7 @@
           <h5 class="card-title">{{ b.title }}</h5>
           <p class="card-text">Auteur : {{ b.author }}</p>
           <p class="card-text">{{ b.publicationDate | date: "dd-MM-yyyy" }}</p>
+          <p class="card-text">{{ b.totalPages }} pages</p>
         </div>
       </div>
     </li>

@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { User } from 'src/app/interface/user';
 import { UserService } from 'src/app/service/user.service';
 import jwtDecode from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-password-edit',
@@ -60,38 +61,64 @@ export class PasswordEditComponent implements OnInit {
       return;
     }
 
-    let login = {
-      username: this.user.email,
-      password: this.form.value.previousPassword,
-    };
-    this.auth.authenticate(login).subscribe(
-      (data) => {
-        if (
-          this.form.value.newPassword === this.form.value.confirmation &&
-          this.form.value.newPassword.length > 0
-        ) {
-          let updatedPassword = {
-            previousPassword: this.form.value.previousPassword,
-            newPassword: this.form.value.newPassword,
-            confirmation: this.form.value.confirmation,
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-warning ml-1',
+        cancelButton: 'btn btn-secondary mr-1',
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Etes-vous sûre de vouloir modifier votre mot de passe ?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, vas-y',
+        cancelButtonText: 'Non, annule',
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.value) {
+          let login = {
+            username: this.user.email,
+            password: this.form.value.previousPassword,
           };
-          this.userService.updatePassword(updatedPassword).subscribe(
-            () => {
-              this.router.navigateByUrl('/profil');
+          this.auth.authenticate(login).subscribe(
+            (data) => {
+              if (
+                this.form.value.newPassword === this.form.value.confirmation &&
+                this.form.value.newPassword.length > 0
+              ) {
+                let updatedPassword = {
+                  previousPassword: this.form.value.previousPassword,
+                  newPassword: this.form.value.newPassword,
+                  confirmation: this.form.value.confirmation,
+                };
+                this.userService.updatePassword(updatedPassword).subscribe(
+                  () => {
+                    swalWithBootstrapButtons.fire(
+                      'Validation',
+                      'Votre mot de passe a bien été modifié.',
+                      'success'
+                    );
+                    this.router.navigateByUrl('/profil');
+                  },
+                  (error) => {
+                    this.error =
+                      'Malheureusement, une erreur semble être survenu, veuillez nous excusez pour le désagrément.';
+                  }
+                );
+              } else {
+                this.error =
+                  'Le nouveau mot de passe et sa confirmation ne correspondent pas.';
+              }
             },
             (error) => {
-              this.error =
-                'Malheureusement, une erreur semble être survenu, veuillez nous excusez pour le désagrément.';
+              this.error = 'Le mot de passe actuel ne semble pas être le bon.';
             }
           );
-        } else {
-          this.error =
-            'Le nouveau mot de passe et sa confirmation ne correspondent pas.';
         }
-      },
-      (error) => {
-        this.error = 'Le mot de passe actuel ne semble pas être le bon.';
-      }
-    );
+      });
   }
 }
