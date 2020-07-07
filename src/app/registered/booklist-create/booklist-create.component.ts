@@ -270,7 +270,7 @@ export class BooklistCreateComponent implements OnInit {
       name: this.booklistForm.value['name'],
       category: 'api/categories/' + this.booklistForm.value['category'],
       status: this.booklistForm.value['status'],
-      createdAt: new Date('1995-12-17T03:24:00'),
+      createdAt: new Date(),
       creatorId: '/api/users/' + this.user['id'],
       books: listBooksIdToUpload,
     };

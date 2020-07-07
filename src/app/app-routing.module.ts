@@ -13,12 +13,14 @@ import { BooklistDetailsComponent } from './public/research/booklist-details/boo
 import { UserDetailsComponent } from './public/research/user-details/user-details.component';
 import { ProfilEditComponent } from './registered/profil-edit/profil-edit.component';
 import { PasswordEditComponent } from './registered/password-edit/password-edit.component';
+import { ContactComponent } from './public/contact/contact.component';
 
 const routes: Routes = [
   { path: '', component: FrontpageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'research', component: ResearchComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'profil', component: ProfilBooklistsComponent },
   { path: 'profil/edit', component: ProfilEditComponent },
   { path: 'profil/edit/password', component: PasswordEditComponent },

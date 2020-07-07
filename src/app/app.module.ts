@@ -19,6 +19,8 @@ import { UserDetailsComponent } from './public/research/user-details/user-detail
 import { ProfilEditComponent } from './registered/profil-edit/profil-edit.component';
 import { BooklistService } from './service/booklist.service';
 import { PasswordEditComponent } from './registered/password-edit/password-edit.component';
+import { ContactComponent } from './public/contact/contact.component';
+import { BottompageComponent } from './bottompage.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { PasswordEditComponent } from './registered/password-edit/password-edit.
     UserDetailsComponent,
     ProfilEditComponent,
     PasswordEditComponent,
+    ContactComponent,
+    BottompageComponent,
   ],
   imports: [
     BrowserModule,

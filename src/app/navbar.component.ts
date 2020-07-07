@@ -27,6 +27,12 @@ import { Router } from '@angular/router';
           <li class="nav-item active" *ngIf="isAuthenticated">
             <a class="nav-link" routerLink="/profil">Mes booklists</a>
           </li>
+          <li class="nav-item active" *ngIf="isAuthenticated">
+            <a class="nav-link" routerLink="/research">Recherche</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" routerLink="/contact">Contacts</a>
+          </li>
         </ul>
         <ul class="navbar-nav ml-auto">
           <ng-container *ngIf="!isAuthenticated">

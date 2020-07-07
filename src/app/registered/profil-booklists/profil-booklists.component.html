@@ -39,14 +39,22 @@
       </small>
     </div>
     <div class="container pt-3">
+      <div class="d-flex flex-row">
+        <div>
+          <h2>Mes bookLists</h2>
+
+          <a class="btn btn-light" routerLink="/booklist/create">
+            <i class="fas fa-arrow-circle-right pr-2"></i>Ajouter une nouvelle
+            bookList
+          </a>
+        </div>
+        <img
+          src="../../../assets/images/livres.png"
+          alt="Pile de livres en noir et blanc"
+          class="illustration ml-4"
+        />
+      </div>
       <div *ngIf="user['booklists']">
-        <h3>Mes bookLists</h3>
-
-        <a class="btn btn-light" routerLink="/booklist/create">
-          <i class="fas fa-arrow-circle-right pr-2"></i>Ajouter une nouvelle
-          bookList
-        </a>
-
         <ul class="pt-3">
           <li *ngFor="let b of user['booklists']" class="pt-2">
             <a routerLink="/booklist/{{ b.id }}" class="pr-2">{{ b.name }}</a>
