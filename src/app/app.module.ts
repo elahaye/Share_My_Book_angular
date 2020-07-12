@@ -20,7 +20,7 @@ import { ProfilEditComponent } from './registered/profil-edit/profil-edit.compon
 import { BooklistService } from './service/booklist.service';
 import { PasswordEditComponent } from './registered/password-edit/password-edit.component';
 import { ContactComponent } from './public/contact/contact.component';
-import { BottompageComponent } from './bottompage.component';
+import { FooterComponent } from './footer.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import { BottompageComponent } from './bottompage.component';
     ProfilEditComponent,
     PasswordEditComponent,
     ContactComponent,
-    BottompageComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

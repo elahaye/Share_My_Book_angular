@@ -39,6 +39,10 @@ export class ResearchComponent implements OnInit {
   ngOnInit(): void {
     this.ui.setLoading(true);
     this.loading = true;
+    this.form.valueChanges.subscribe((values) => {
+      console.log(values);
+      this.handleSubmit();
+    });
     this.booklistService.findAll().subscribe(
       (booklists) => {
         for (let i = 0; i < booklists.length; i++) {
@@ -62,9 +66,9 @@ export class ResearchComponent implements OnInit {
     this.categoryService.findAll().subscribe(
       (categories) => {
         for (let i = 0; i < categories.length; i++) {
-          this.form.addControl(categories[i]['name'], new FormControl(''));
+          this.form.addControl(categories[i]['name'], new FormControl(false));
         }
-        this.categories = categories;
+        this.categories = categories.sort((a, b) => (a.name > b.name ? 1 : -1));
         this.loading = false;
         this.ui.setLoading(false);
       },
@@ -81,6 +85,7 @@ export class ResearchComponent implements OnInit {
     this.filteredUsers = [];
 
     this.selectedCategories = [];
+    console.log(this.form.value);
     for (let i = 0; i < this.categories.length; i++) {
       if (this.form.value[this.categories[i]['name']] === true) {
         this.selectedCategories.push(this.categories[i]['name']);

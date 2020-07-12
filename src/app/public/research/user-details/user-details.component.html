@@ -11,20 +11,11 @@
           >Profil de {{ user["nickname"] }}</span
         >
       </h1>
-      <ng-container *ngIf="user.avatar">
-        <img
-          src="{{ user.avatar }}"
-          alt="Photo de profil de {{ user['nickname'] }}"
-          class="profilImage ml-3"
-        />
-      </ng-container>
-      <ng-container *ngIf="!user.avatar">
-        <img
-          src="../../../assets/images/anonyme.jpg"
-          alt="Photo de profil de {{ user['nickname'] }}"
-          class="profilImage ml-3"
-        />
-      </ng-container>
+      <img
+        [src]="user.avatar ? user.avatar : '/assets/images/anonyme.jpg'"
+        alt="Photo de profil de {{ user['nickname'] }}"
+        class="profilImage ml-3"
+      />
     </div>
     <div class="container pt-3">
       <div *ngIf="user['booklists']">

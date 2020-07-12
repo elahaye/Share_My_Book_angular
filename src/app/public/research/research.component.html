@@ -6,7 +6,7 @@
     <p class="mb-0">{{ error }}</p>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="handleSubmit()">
+  <form [formGroup]="form">
     <div class="input-group md-form form-sm form-2 pl-0">
       <input
         class="form-control my-0 py-1 amber-border"
@@ -15,9 +15,9 @@
         aria-label="Search"
         formControlName="research"
       />
-      <button class="btn btn-light">
+      <!-- <button class="btn btn-light">
         <i class="fas fa-search text-warning" aria-hidden="true"></i>
-      </button>
+      </button> -->
     </div>
     <div class="pt-4 pl-3 pr-3 pb-2">
       <h4>Catégories :</h4>

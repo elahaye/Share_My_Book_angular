@@ -75,7 +75,7 @@
     </div>
 
     <div class="container col-7">
-      <form [formGroup]="researchForm" (ngSubmit)="researchBook()">
+      <form [formGroup]="researchForm" (input)="researchBook()">
         <div class="row">
           <div class="input-group mx-auto">
             <input
@@ -84,7 +84,6 @@
               class="form-control"
               formControlName="researchInput"
             />
-            <button class="btn btn-warning ml-1">Rechercher</button>
           </div>
         </div>
       </form>
@@ -106,7 +105,7 @@
               <p class="card-text">{{ b.publicationDate }}</p>
               <button
                 type="button"
-                class="btn btn-info pt-3"
+                class="btn btn-info mt-3"
                 (click)="addToList(b)"
               >
                 Ajouter

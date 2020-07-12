@@ -100,52 +100,56 @@ export class BooklistEditComponent implements OnInit {
   }
 
   researchBook() {
-    this.http
-      .get(this.bookUrl + this.researchForm.value['researchInput'])
-      .pipe(
-        map((result) =>
-          result['items'].map((book) => {
-            if (book.volumeInfo.imageLinks === undefined) {
-              book.volumeInfo.imageLinks = {
-                smallThumbnail: '',
-              };
-            }
-
-            if (book.volumeInfo.authors === undefined) {
-              book.volumeInfo.authors = 'non-précisé';
-            } else {
-              if (book.volumeInfo.authors.length > 0) {
-                book.volumeInfo.authors = book.volumeInfo.authors.join(' ');
-              } else {
-                book.volumeInfo.authors = book.volumeInfo.authors[0];
+    if (this.researchForm.value['researchInput'].length !== 0) {
+      this.http
+        .get(this.bookUrl + this.researchForm.value['researchInput'])
+        .pipe(
+          map((result) =>
+            result['items'].map((book) => {
+              if (book.volumeInfo.imageLinks === undefined) {
+                book.volumeInfo.imageLinks = {
+                  smallThumbnail: '',
+                };
               }
-            }
-            return {
-              referenceApi: book.id,
-              title: book.volumeInfo.title,
-              author: book.volumeInfo.authors,
-              publicationDate:
-                book.volumeInfo.publishedDate === undefined
-                  ? '0000'
-                  : book.volumeInfo.publishedDate,
-              totalPages:
-                book.volumeInfo.pageCount === undefined
-                  ? 0
-                  : book.volumeInfo.pageCount,
-              image: book.volumeInfo.imageLinks.smallThumbnail,
-            };
-          })
+
+              if (book.volumeInfo.authors === undefined) {
+                book.volumeInfo.authors = 'non-précisé';
+              } else {
+                if (book.volumeInfo.authors.length > 0) {
+                  book.volumeInfo.authors = book.volumeInfo.authors.join(' ');
+                } else {
+                  book.volumeInfo.authors = book.volumeInfo.authors[0];
+                }
+              }
+              return {
+                referenceApi: book.id,
+                title: book.volumeInfo.title,
+                author: book.volumeInfo.authors,
+                publicationDate:
+                  book.volumeInfo.publishedDate === undefined
+                    ? '0000'
+                    : book.volumeInfo.publishedDate,
+                totalPages:
+                  book.volumeInfo.pageCount === undefined
+                    ? 0
+                    : book.volumeInfo.pageCount,
+                image: book.volumeInfo.imageLinks.smallThumbnail,
+              };
+            })
+          )
         )
-      )
-      .subscribe(
-        (result) => {
-          this.booksFromGoogleApi = result;
-        },
-        (error) => {
-          this.error =
-            'Une erreur semble être survenue durant le chargement des résultats de votre requête. Veuillez nous excusez pour le désagrément.';
-        }
-      );
+        .subscribe(
+          (result) => {
+            this.booksFromGoogleApi = result;
+          },
+          (error) => {
+            this.error =
+              'Une erreur est survenue lors du chargement des résultats. Veuillez nous excuser du désagrément.';
+          }
+        );
+    } else {
+      return;
+    }
   }
 
   addToList(book) {

@@ -34,13 +34,15 @@ export class BooklistDetailsComponent implements OnInit {
         this.id = params['id'];
         this.booklistService.find(this.id).subscribe(
           (booklist) => {
+            let avatarId;
             if (booklist.creatorId.avatar.length !== 0) {
-              booklist.creatorId.avatar = booklist.creatorId.avatar.replace(
+              avatarId = booklist.creatorId.avatar.replace(
                 '/api/media_objects/',
                 ''
               );
+              booklist.creatorId.avatar = '';
 
-              this.userService.getFile(booklist.creatorId.avatar).subscribe(
+              this.userService.getFile(avatarId).subscribe(
                 (avatar: any) => {
                   booklist.creatorId.avatar =
                     environment.appliUrl + avatar.contentUrl;
@@ -48,6 +50,7 @@ export class BooklistDetailsComponent implements OnInit {
                   this.ui.setLoading(false);
                 },
                 (error) => {
+                  this.ui.setLoading(false);
                   this.error =
                     "Une erreur est survenue lors du chargement de l'avatar du créateur. Veuillez nous excusez du désagrément.";
                 }
@@ -60,12 +63,14 @@ export class BooklistDetailsComponent implements OnInit {
             this.ui.setLoading(false);
           },
           (error) => {
+            this.ui.setLoading(false);
             this.error =
               'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
           }
         );
       },
       (error) => {
+        this.ui.setLoading(false);
         this.error =
           'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }

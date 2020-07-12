@@ -3,7 +3,11 @@
   <div class="d-flex flex-row align-items-center pl-4">
     <img
       class="creatorImg m-2"
-      src="{{ booklist.creatorId.avatar }}"
+      [src]="
+        booklist.creatorId.avatar
+          ? booklist.creatorId.avatar
+          : '/assets/images/anonyme.jpg'
+      "
       alt="{{ booklist.creatorId.nickname }}"
     />
     <a

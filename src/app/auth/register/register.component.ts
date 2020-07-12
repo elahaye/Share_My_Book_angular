@@ -48,7 +48,6 @@ export class RegisterComponent implements OnInit {
 
   registerUser(values, validation) {
     if (this.form.value.password === this.form.value.confirmation) {
-      console.log(values);
       this.userService.create(values).subscribe(
         (user) => {
           validation;
@@ -106,22 +105,22 @@ export class RegisterComponent implements OnInit {
         reverseButtons: true,
       })
       .then((result) => {
+        let validation = swalWithBootstrapButtons.fire(
+          'Validation',
+          'Votre enregistrement est un succès.',
+          'success'
+        );
+
         if (result.value) {
           this.form.value.registrationDate = new Date();
           this.form.value.roles = ['ROLE_USER'];
 
           if (this.fileToUpload == null) {
-            this.registerUser(this.form.value);
+            this.registerUser(this.form.value, validation);
           } else {
             this.userService.postFile(this.fileToUpload).subscribe(
               (data) => {
                 this.form.value.avatar = data['@id'];
-
-                let validation = swalWithBootstrapButtons.fire(
-                  'Validation',
-                  'Votre enregistrement est un succès.',
-                  'success'
-                );
 
                 this.registerUser(this.form.value, validation);
               },

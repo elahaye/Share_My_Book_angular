@@ -29,15 +29,14 @@ export class BooklistCreateComponent implements OnInit {
   status = ['public', 'privé'];
   booksChosenList = [];
   apiPlatformBooks: Book[] = [];
+  bookUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
+  booksFromGoogleApi: [];
 
   booklistForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     category: new FormControl(this.categories),
     status: new FormControl(this.status[0]),
   });
-
-  bookUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
-  booksFromGoogleApi: [];
 
   researchForm = new FormGroup({
     researchInput: new FormControl(''),
@@ -66,7 +65,6 @@ export class BooklistCreateComponent implements OnInit {
       }
     );
     const token = window.localStorage.getItem('token');
-
     const data: any = jwtDecode(token);
 
     this.userService.find(data['id']).subscribe(
@@ -82,52 +80,56 @@ export class BooklistCreateComponent implements OnInit {
   }
 
   researchBook() {
-    this.http
-      .get(this.bookUrl + this.researchForm.value['researchInput'])
-      .pipe(
-        map((result) =>
-          result['items'].map((book) => {
-            if (book.volumeInfo.imageLinks === undefined) {
-              book.volumeInfo.imageLinks = {
-                smallThumbnail: '',
-              };
-            }
-
-            if (book.volumeInfo.authors === undefined) {
-              book.volumeInfo.authors = 'non-précisé';
-            } else {
-              if (book.volumeInfo.authors.length > 0) {
-                book.volumeInfo.authors = book.volumeInfo.authors.join(' ');
-              } else {
-                book.volumeInfo.authors = book.volumeInfo.authors[0];
+    if (this.researchForm.value['researchInput'].length !== 0) {
+      this.http
+        .get(this.bookUrl + this.researchForm.value['researchInput'])
+        .pipe(
+          map((result) =>
+            result['items'].map((book) => {
+              if (book.volumeInfo.imageLinks === undefined) {
+                book.volumeInfo.imageLinks = {
+                  smallThumbnail: '',
+                };
               }
-            }
-            return {
-              referenceApi: book.id,
-              title: book.volumeInfo.title,
-              author: book.volumeInfo.authors,
-              publicationDate:
-                book.volumeInfo.publishedDate === undefined
-                  ? '0000'
-                  : book.volumeInfo.publishedDate,
-              totalPages:
-                book.volumeInfo.pageCount === undefined
-                  ? 0
-                  : book.volumeInfo.pageCount,
-              image: book.volumeInfo.imageLinks.smallThumbnail,
-            };
-          })
+
+              if (book.volumeInfo.authors === undefined) {
+                book.volumeInfo.authors = 'non-précisé';
+              } else {
+                if (book.volumeInfo.authors.length > 0) {
+                  book.volumeInfo.authors = book.volumeInfo.authors.join(' ');
+                } else {
+                  book.volumeInfo.authors = book.volumeInfo.authors[0];
+                }
+              }
+              return {
+                referenceApi: book.id,
+                title: book.volumeInfo.title,
+                author: book.volumeInfo.authors,
+                publicationDate:
+                  book.volumeInfo.publishedDate === undefined
+                    ? '0000'
+                    : book.volumeInfo.publishedDate,
+                totalPages:
+                  book.volumeInfo.pageCount === undefined
+                    ? 0
+                    : book.volumeInfo.pageCount,
+                image: book.volumeInfo.imageLinks.smallThumbnail,
+              };
+            })
+          )
         )
-      )
-      .subscribe(
-        (result) => {
-          this.booksFromGoogleApi = result;
-        },
-        (error) => {
-          this.error =
-            'Une erreur est survenue lors du chargement des résultats. Veuillez nous excuser du désagrément.';
-        }
-      );
+        .subscribe(
+          (result) => {
+            this.booksFromGoogleApi = result;
+          },
+          (error) => {
+            this.error =
+              'Une erreur est survenue lors du chargement des résultats. Veuillez nous excuser du désagrément.';
+          }
+        );
+    } else {
+      return;
+    }
   }
 
   addToList(book) {
