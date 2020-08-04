@@ -40,7 +40,6 @@ export class ResearchComponent implements OnInit {
     this.ui.setLoading(true);
     this.loading = true;
     this.form.valueChanges.subscribe((values) => {
-      console.log(values);
       this.handleSubmit();
     });
     this.booklistService.findAll().subscribe(
@@ -50,8 +49,9 @@ export class ResearchComponent implements OnInit {
         }
       },
       (error) => {
+        this.ui.setLoading(false);
         this.error =
-          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }
     );
     this.userService.findAll().subscribe(
@@ -59,8 +59,9 @@ export class ResearchComponent implements OnInit {
         this.users = users;
       },
       (error) => {
+        this.ui.setLoading(false);
         this.error =
-          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }
     );
     this.categoryService.findAll().subscribe(
@@ -73,8 +74,9 @@ export class ResearchComponent implements OnInit {
         this.ui.setLoading(false);
       },
       (error) => {
+        this.ui.setLoading(false);
         this.error =
-          'Une erreur est survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
+          'Une erreur semble être survenue lors du chargement de la page. Veuillez nous excusez du désagrément.';
       }
     );
   }
@@ -85,7 +87,6 @@ export class ResearchComponent implements OnInit {
     this.filteredUsers = [];
 
     this.selectedCategories = [];
-    console.log(this.form.value);
     for (let i = 0; i < this.categories.length; i++) {
       if (this.form.value[this.categories[i]['name']] === true) {
         this.selectedCategories.push(this.categories[i]['name']);
