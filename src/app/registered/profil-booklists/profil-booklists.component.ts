@@ -31,7 +31,7 @@ export class ProfilBooklistsComponent implements OnInit {
 
           this.userService.getFile(user.avatar).subscribe(
             (avatar: any) => {
-              user.avatar = environment.appliUrl + avatar.contentUrl;
+              user.avatar = environment.mediaUrl + avatar.contentUrl;
               this.user = user;
               this.ui.setLoading(false);
             },

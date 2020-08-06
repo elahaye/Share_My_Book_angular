@@ -9,7 +9,6 @@ body {
   margin: 50px 140px;
   padding: 40px;
   border-radius: 20px;
-  // min-height: calc(100vh - 187px);
 }
 
 #loadingButton {
@@ -28,4 +27,33 @@ body {
 
 a {
   color: black;
+}
+
+/*-----------------------------------------------
+-------------------------------------------------
+---------------- RESPONSIVE ---------------------
+-------------------------------------------------
+-----------------------------------------------*/
+
+@media screen and (max-width: 1059px) {
+  #background {
+    margin: 50px 80px;
+    padding: 30px;
+  }
+  .display-4 {
+    font-size: 2.5rem !important;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  #background {
+    margin: 30px 30px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #background {
+    margin: 15px 15px;
+    padding: 20px;
+  }
 }

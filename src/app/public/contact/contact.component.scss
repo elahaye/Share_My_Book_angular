@@ -1,5 +1,5 @@
 li {
-  list-style-type: none;
+  list-style: none;
   padding: 10px 0;
   font-size: 20px;
 }
@@ -8,4 +8,23 @@ li {
 .far {
   font-size: 30px;
   padding-right: 8px;
+}
+
+div.card {
+  max-width: 25rem !important;
+}
+
+/*-----------------------------------------------
+-------------------------------------------------
+---------------- RESPONSIVE ---------------------
+-------------------------------------------------
+-----------------------------------------------*/
+
+@media screen and (max-width: 768px) {
+  div.card {
+    max-width: 100% !important;
+  }
+  div.w-50 {
+    width: 100% !important;
+  }
 }

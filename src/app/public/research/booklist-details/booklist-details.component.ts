@@ -45,7 +45,7 @@ export class BooklistDetailsComponent implements OnInit {
               this.userService.getFile(avatarId).subscribe(
                 (avatar: any) => {
                   booklist.creatorId.avatar =
-                    environment.appliUrl + avatar.contentUrl;
+                    environment.mediaUrl + avatar.contentUrl;
                   this.booklist = booklist;
                   this.ui.setLoading(false);
                 },
