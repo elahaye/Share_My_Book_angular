@@ -3,3 +3,12 @@
   width: 250px;
   height: 250px;
 }
+
+@media screen and (max-width: 530px) {
+  .badge {
+    font-size: 55%;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+}

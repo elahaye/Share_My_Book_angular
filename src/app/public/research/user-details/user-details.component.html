@@ -4,7 +4,7 @@
     <p class="mb-0">{{ error }}</p>
   </div>
 
-  <div class="d-flex flex-row justify-content-around">
+  <div class="d-flex flex-md-row flex-column">
     <div class="container">
       <h1>
         <span class="badge badge-pill badge-warning mb-2"
@@ -14,7 +14,7 @@
       <img
         [src]="user.avatar ? user.avatar : '/assets/images/anonyme.jpg'"
         alt="Photo de profil de {{ user['nickname'] }}"
-        class="profilImage ml-3"
+        class="profilImage ml-md-3 mx-auto"
       />
     </div>
     <div class="container pt-3">

@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
       },
       (error) => {
         this.error =
-          'Une erreur est survenue lors de votre authentification. Veuillez nous excusez de ce désagrément. Réessayez de nouveau !';
+          "L'indentifiant ou mot de passe entré est erroné, veuillez recommencer.";
       }
     );
   }

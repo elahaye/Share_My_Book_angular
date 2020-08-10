@@ -7,3 +7,22 @@
 .illustration {
   width: 150px;
 }
+
+@media screen and (max-width: 1255px) {
+  .illustration {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .badge {
+    font-size: 55%;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  .profilImage {
+    width: 200px;
+    height: 200px;
+  }
+}
